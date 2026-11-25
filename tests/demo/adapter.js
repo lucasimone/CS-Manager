@@ -29,11 +29,11 @@ function decodeDemo(value){return Uint8Array.from(atob(value),c=>c.charCodeAt(0)
 async function startDemo(){
  const banner=document.createElement('div');
  banner.id='demoBanner';banner.setAttribute('role','status');
- banner.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9999;padding:6px 12px;background:#573d91;color:white;display:flex;align-items:center;justify-content:space-between;gap:12px;font:600 12px system-ui';
+ banner.style.cssText='position:relative;z-index:1;padding:6px 12px;background:#573d91;color:white;display:flex;align-items:center;justify-content:space-between;gap:12px;font:600 12px system-ui';
  const label=document.createElement('span');label.textContent='DEMO / QA — synthetic data only · changes reset on reload';
  const reset=document.createElement('button');reset.id='demoReset';reset.textContent='Reset demo';reset.style.cssText='background:white;color:#573d91;padding:3px 10px;border:0;border-radius:4px';
  reset.onclick=()=>{if(confirm('Reset synthetic demo data?'))location.reload()};
- banner.append(label,reset);document.body.append(banner);document.body.style.paddingBottom='38px';
+ banner.append(label,reset);document.body.prepend(banner);
  document.title='CS-Manager — DEMO / QA';
  for(const id of ['pickMaster','pickDirectory','reconnectMaster','reconnectDirectory','master','yearFolder','files','folder','nativeMasterLabel']){
    const node=$('#'+id);if(!node)continue;
