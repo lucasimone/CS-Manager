@@ -9,7 +9,7 @@ function between(start, end) {
   assert.ok(a >= 0 && b > a, 'Expected source boundaries: '+start+' / '+end);
   return source.slice(a, b);
 }
-const navigation = between('function canDiscardTimesheetDraft()', "document.querySelectorAll('.nav button').forEach(");
+const navigation = between('var contractDraftBaseline=', "document.querySelectorAll('.nav button').forEach(b=>{b.setAttribute('aria-label'");
 const back = between("$('#timesheetBack').onclick=", ";$('#previewSheet').onchange");
 const run = between("$('#run').onclick=", ";$('#quickAnalyze').onclick");
 const reset = between("$('#reset').onclick=", ";$('#search').oninput");
