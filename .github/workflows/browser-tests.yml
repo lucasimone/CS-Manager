@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: '22'
       - name: Generate synthetic Excel files
-        run: python3 tests/fixtures/generate.py
+        run: python3 tests/demo/build.py
       - name: Install test-only dependencies
         run: npm install --no-save --package-lock=false @playwright/test@1.56.1
       - name: Install Chromium
@@ -31,4 +31,5 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            demo/index.html
           if-no-files-found: warn
