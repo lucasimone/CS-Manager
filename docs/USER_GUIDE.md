@@ -1,4 +1,4 @@
-# CS-Manager 2.0.1: user guide
+# CS-Manager 2.0.2: user guide
 
 Open `index.html` (identified by the CS-Manager icon in the browser tab) and configure the contract workbook and timesheet folder in **Settings**. See `INSTALLATION.md` for setup and permissions. The application reads selected files locally in your browser.
 
@@ -51,6 +51,8 @@ In a timesheet detail, choose **Exclude from validation**, enter a reason and se
 From a timesheet’s details, select Contact PM to review an editable email draft with the issues in English and the file name. Check the PM and recipient. The file is not attached automatically.
 
 In timesheet details, copy the suggested PDF filename (the Excel filename followed by -VALIDATED.pdf) and paste it into the browser save dialog. The suggestion uses the original Excel filename.
+
+If changes are unsaved, confirm before leaving the details, reopening a timesheet, starting analysis or clearing results. Cancel to keep the draft.
 
 In timesheet details, use the Checks, Issues, Preview and History tabs. The compact action bar follows the workflow: contact the PM, exclude if necessary, copy the suggested filename and print after validation.
 
