@@ -1,93 +1,109 @@
-# CS Manager
+# CS-Manager
 
+**Contract management, timesheet validation and financial monitoring in a standalone browser application.**
 
+Current documented release: **2.0.1** — see the [changelog](docs/CHANGELOG.md).
 
-## Getting started
+CS-Manager brings contract information, resource allocation, monthly timesheet review and financial delivery preparation into a single workspace. It reads selected Excel workbooks locally in the browser and stores review decisions in an annual JSON archive.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Features
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+| Area | Capabilities |
+| --- | --- |
+| Contracts | Browse, create and edit contracts; review resources, planned hours, rates, budget and FTU. |
+| Profiles and rates | Search and filter resources, contractors, project managers and contractual rates. |
+| Timesheet review | Analyse monthly Excel files, including Standard and V2 formats; check contract associations, hours, totals, periods, saved formula values and potential duplicates. |
+| Timesheet details | Review checks, issues, spreadsheet previews and revision history; record comments, accept anomalies, explicitly validate or exclude a document. |
+| PDF preparation | Print saved, validated timesheets with a suggested filename derived from the original Excel filename. |
+| Contract consumption | Review monthly and cumulative costs, remaining budget and estimated consumption trends. |
+| Delivery | Review monthly costs by PO, CS and profile; prepare an editable financial email draft. |
+| Settings and diagnostics | Configure data sources, inspect the analysis log and consult the built-in guide. |
 
-## Add your files
+The interface supports English, French and Italian, light and dark themes, and a collapsible sidebar.
 
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## Quick start
 
+1. Obtain the complete distribution folder from this repository.
+2. Open `index.html` in a recent version of Google Chrome or Microsoft Edge.
+3. In **Settings**, select the contract workbook and the annual timesheet folder. A blank workbook template can be downloaded from Settings.
+4. Grant the required browser permissions and select **Analyze**.
+5. Review individual timesheets, save decisions and explicitly validate eligible documents.
+6. Use **Contract consumption** and **Delivery** to review costs and prepare monthly reporting.
+
+No mandatory backend or software installation is required for the normal browser workflow. Browser policies and filesystem permissions may affect local file access.
+
+For setup and troubleshooting, read [Installation](INSTALLATION.md) and the [User guide](docs/USER_GUIDE.md).
+
+## Data requirements
+
+The Excel master workbook must contain:
+
+- `Contracts`
+- `Persone e tariffe PO`
+
+The annual timesheet directory uses monthly folders named `01` through `12`. Review decisions are stored in `CS-Manager-controls.json` at the annual directory level. Legacy control files can be imported and retained as backups.
+
+Production workbooks, personnel data, timesheets and validation archives are not intended to be distributed through this repository.
+
+## Monthly workflow
+
+```mermaid
+flowchart LR
+    A[Configure sources] --> B[Analyze]
+    B --> C[Review checks and issues]
+    C --> D[Save decisions]
+    D --> E[Explicit validation]
+    E --> F[Prepare PDF]
+    E --> G[Review delivery scope]
+    G --> H[Prepare financial email]
 ```
-cd existing_repo
-git remote add origin https://code-repos.ep-foundry-cloud.europarl.europa.eu/ep/dg-itec/websys/CS-Manager.git
-git branch -M main
-git push -uf origin main
+
+Saving checks does not automatically validate a timesheet. Browser PDF printing requires a saved validation. Cost eligibility and delivery readiness are distinct from validation status.
+
+The suggested PDF filename preserves the original Excel basename and appends `-VALIDATED.pdf`.
+
+## Architecture and distribution
+
+CS-Manager is distributed as a self-contained HTML application using embedded HTML, CSS and JavaScript. Selected Excel files are processed locally; browser filesystem access is used for supported workbook and archive updates. Optional Windows export helpers are supplied separately.
+
+```text
+CS-Manager/
+├── index.html
+├── INSTALLATION.md
+├── README.md
+├── docs/
+│   ├── USER_GUIDE.md
+│   └── CHANGELOG.md
+├── data/
+│   └── README.md
+└── tools/
+    ├── EXPORT_VALIDATED_TIMESHEET.cmd
+    └── EXPORT_VALIDATED_TIMESHEET.ps1
 ```
 
-## Integrate with your tools
+## Operational limitations
 
-* [Set up project integrations](https://code-repos.ep-foundry-cloud.europarl.europa.eu/ep/dg-itec/websys/CS-Manager/-/settings/integrations)
+- The application reads saved Excel formula values; it does not run Excel macros or recalculate formulas. Recalculate and save affected workbooks in Excel before relying on updated derived values.
+- Month folders are checked, but the reporting year is read from the timesheet itself; an independent incorrect-year check is not currently available.
+- Browser-generated PDFs may differ from Excel formatting. Review the A4 preview and source values before use.
+- Email preparation does not automatically attach documents, verify PDF availability or confirm delivery.
+- Financial projections depend on available source data and may be incomplete.
+- Archive revision and hash checks do not guarantee safe simultaneous writes from different computers. Avoid concurrent editing and maintain backups.
+- Browser support and organizational security policies may restrict filesystem access.
 
-## Collaborate with your team
+## Data protection
 
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+Use authorized storage locations and follow applicable organizational data-handling policies. Do not commit real workbooks, timesheets, financial rates, personal information, validation archives, credentials or internal infrastructure details to a public repository. Use synthetic data for demonstrations, testing and screenshots.
 
-## Test and Deploy
+## Quality assurance and roadmap
 
-Use the built-in continuous integration in GitLab.
+Planned improvements include automated unit and browser regression tests, synthetic QA fixtures, improved draft protection, consistent reusable UI components, and more explicit monthly delivery readiness. These are roadmap items, not claims of implemented functionality or completed test coverage.
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
+Report reproducible defects using anonymized examples. Include the application version, browser, expected behaviour and actual behaviour.
 
-***
+## Documentation
 
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- [Installation and browser requirements](INSTALLATION.md)
+- [User guide](docs/USER_GUIDE.md)
+- [Release history](docs/CHANGELOG.md)
+- [Data directory guidance](data/README.md)
