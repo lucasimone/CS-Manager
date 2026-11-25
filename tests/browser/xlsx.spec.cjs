@@ -1,6 +1,6 @@
 const {test,expect}=require('@playwright/test');
 const path=require('node:path');
-const root=path.join(__dirname,'fixtures','generated');
+const root=path.join(__dirname,'..','fixtures','generated');
 test.beforeEach(async({page})=>{
  await page.goto('/');
  await expect(page.locator('#contractsView')).toBeVisible();
