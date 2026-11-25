@@ -1,0 +1,34 @@
+name: Browser and XLSX integration tests
+on:
+  push:
+    branches: [main, 'qa/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  chromium:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate synthetic Excel files
+        run: python3 tests/fixtures/generate.py
+      - name: Install test-only dependencies
+        run: npm install --no-save --package-lock=false @playwright/test@1.56.1
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests
+        run: npx playwright test --config=playwright.config.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-test-evidence
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: warn

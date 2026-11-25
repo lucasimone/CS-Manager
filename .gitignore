@@ -9,3 +9,9 @@ CS-Manager-controls.json
 TS-CHECKER-controlli.json
 data/*
 !data/README.md
+
+# Local QA outputs
+node_modules/
+playwright-report/
+test-results/
+tests/fixtures/generated/
