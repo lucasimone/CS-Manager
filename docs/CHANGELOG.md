@@ -1,5 +1,7 @@
 # CS-Manager changelog
 
+### 2.0.3
+- Protect contract and resource drafts and correct CSV exports and Excel date handling.
 ### 2.0.2
 - Protect unsaved timesheet drafts when navigating, reopening, analyzing or clearing results.
 ### 2.0.1
