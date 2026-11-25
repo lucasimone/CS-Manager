@@ -13,7 +13,9 @@ test('shared design tokens resolve across light and dark themes',async({page})=>
  });
  expect(await snapshot()).toEqual({surface:'rgb(255, 255, 255)',radius:'12px',spacing:'12px'});
  await expect(page.locator('#contractsView')).toHaveCSS('border-radius','12px');
+ await page.locator('#workspacePreferences summary').click();
  await page.locator('#themeToggle').click();
+ await page.locator('#workspacePreferences summary').click();
  expect(await snapshot()).toEqual({surface:'rgb(28, 38, 54)',radius:'12px',spacing:'12px'});
  await expect(page.locator('#contractsView')).toHaveCSS('border-radius','12px');
 });
