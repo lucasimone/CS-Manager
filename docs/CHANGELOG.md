@@ -1,5 +1,7 @@
 # CS-Manager changelog
 
+### 2.0.1
+- Fixed the duplicated heading on the timesheet details page.
 ### 2.0.0
 - Redesigned timesheet validation workspace and derive PDF names from source filenames.
 ### 1.29.0
