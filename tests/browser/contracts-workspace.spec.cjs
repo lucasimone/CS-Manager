@@ -1,0 +1,27 @@
+const {test,expect}=require('@playwright/test');
+test('contract type filter and accessible contract workspace',async({page})=>{
+ await page.goto('/demo/index.html');
+ await expect(page.locator('#demoBanner')).toHaveAttribute('data-ready','true',{timeout:30000});
+ await page.locator('#contractTypeFilter').selectOption('FP');
+ await expect(page.locator('#contractRows tr')).toHaveCount(0);
+ await page.locator('#contractTypeFilter').selectOption('TM');
+ await expect(page.locator('#contractRows tr')).toHaveCount(1);
+ await page.locator('#contractRows button[data-contract-row]').click();
+ await expect(page.locator('#contractOverviewPanel')).toBeVisible();
+ await expect(page.locator('#contractHeadline > div')).toHaveCount(4);
+ await page.locator('#contractOverviewTab').focus();
+ await page.keyboard.press('ArrowRight');
+ await expect(page.locator('#contractResourcesPanel')).toBeVisible();
+ await expect(page.locator('#contractResourceRows tr')).toHaveCount(2);
+ await page.keyboard.press('ArrowRight');
+ await expect(page.locator('#contractBudgetPanel')).toBeVisible();
+ await page.keyboard.press('End');
+ await expect(page.locator('#contractConsumptionPanel')).toBeVisible();
+ await expect(page.locator('#contractConsumptionRows tr')).toHaveCount(1);
+ await expect(page.locator('#contractConsumptionRows tr td').nth(1)).toHaveText('2');
+ await page.screenshot({path:'test-results/contract-consumption-detail.png',fullPage:true});
+ await page.locator('#contractStartEdit').click();
+ await expect(page.locator('#contractForm')).toBeVisible();
+ await page.locator('#contractCancel').click();
+ await expect(page.locator('#contractsView')).toBeVisible();
+});
