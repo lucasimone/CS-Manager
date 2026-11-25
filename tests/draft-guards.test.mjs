@@ -6,10 +6,10 @@ import vm from 'node:vm';
 const source = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 function between(start, end) {
   const a = source.indexOf(start), b = source.indexOf(end, a + start.length);
-  assert.ok(a >= 0 && b > a, 'Expected source boundaries');
+  assert.ok(a >= 0 && b > a, 'Expected source boundaries: '+start+' / '+end);
   return source.slice(a, b);
 }
-const navigation = between('function canDiscardTimesheetDraft()', "document.querySelectorAll('.nav button').forEach(b=>b.onclick");
+const navigation = between('var contractDraftBaseline=', "document.querySelectorAll('.nav button').forEach(b=>{b.setAttribute('aria-label'");
 const back = between("$('#timesheetBack').onclick=", ";$('#previewSheet').onchange");
 const run = between("$('#run').onclick=", ";$('#quickAnalyze').onclick");
 const reset = between("$('#reset').onclick=", ";$('#search').oninput");
