@@ -1,4 +1,4 @@
-# CS-Manager 1.25.0: installation
+# CS-Manager 1.29.0: installation
 
 1. Copy the entire `CS-Manager` folder to the target computer. Keep its folders together.
 2. Open `index.html` in a recent version of Chrome or Edge. No installation is required for the normal workflow.
@@ -27,3 +27,9 @@ Manual review choices and automatic results are retained separately in the annua
 Validated timesheets can also be printed to PDF from the browser on macOS or Windows. Standard forms use a reconstructed portrait layout using the embedded PDF_TEMPLATE workbook and the timesheet values; the technical column K is excluded; V2 timesheets also use the template; additional on-site and near-site hours are combined by category. Other layouts use a generic table. The result may differ from Excel; select A4 portrait and check the values and one-page print preview. The A4 layout uses 16 mm top and bottom margins and 8 mm side margins; a physical printer may require wider margins. Signatures are not added.
 
 The annual archive is read in batches during analysis. Keep the annual folder accessible until processing completes.
+
+From a timesheet’s details, select Contact PM to review an editable email draft with the issues in English and the file name. Check the PM and recipient. The file is not attached automatically.
+
+In timesheet details, copy the suggested PDF filename ({CS}-{Person}-{Period}-Validated.pdf) and paste it into the browser save dialog. The suggestion requires a known CS, person and timesheet period.
+
+In timesheet details, use the Checks, Issues and Details tabs. The compact action bar follows the workflow: contact the PM, exclude if necessary, copy the suggested filename and print after validation.

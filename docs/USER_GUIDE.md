@@ -1,4 +1,4 @@
-# CS-Manager 1.25.0: user guide
+# CS-Manager 1.29.0: user guide
 
 Open `index.html` (identified by the CS-Manager icon in the browser tab) and configure the contract workbook and timesheet folder in **Settings**. See `INSTALLATION.md` for setup and permissions. The application reads selected files locally in your browser.
 
@@ -47,3 +47,9 @@ In timesheet details, use the Issues and Timesheet details tabs to switch betwee
 ## Manual exclusions
 
 In a timesheet detail, choose **Exclude from validation**, enter a reason and set your user name in the top bar. Excluded files remain visible and are omitted from costs. Restore a file from its detail and run the analysis again before validation. If an excluded file changes, review its exclusion. Exclusions are stored in the annual control archive; a writable annual folder is required.
+
+From a timesheet’s details, select Contact PM to review an editable email draft with the issues in English and the file name. Check the PM and recipient. The file is not attached automatically.
+
+In timesheet details, copy the suggested PDF filename ({CS}-{Person}-{Period}-Validated.pdf) and paste it into the browser save dialog. The suggestion requires a known CS, person and timesheet period.
+
+In timesheet details, use the Checks, Issues and Details tabs. The compact action bar follows the workflow: contact the PM, exclude if necessary, copy the suggested filename and print after validation.

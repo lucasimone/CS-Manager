@@ -1,5 +1,15 @@
 # CS-Manager changelog
 
+### 1.29.0
+- Reorganized timesheet details with compact sequential actions and a checks tab.
+### 1.28.0
+- Added a copyable suggested filename for validated timesheet PDFs.
+### 1.27.1
+- Report PM contact draft issues in English regardless of interface language.
+### 1.27.0
+- Improved the PM contact dialog and personalized the greeting.
+### 1.26.0
+- Added an editable PM contact draft with timesheet issues and file location.
 ### 1.25.0
 - Delivery: linked PO and CS selection and consistent field heights.
 ### 1.24.0
