@@ -1,4 +1,4 @@
-# CS-Manager 2.0.0: user guide
+# CS-Manager 2.0.1: user guide
 
 Open `index.html` (identified by the CS-Manager icon in the browser tab) and configure the contract workbook and timesheet folder in **Settings**. See `INSTALLATION.md` for setup and permissions. The application reads selected files locally in your browser.
 
