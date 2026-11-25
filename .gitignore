@@ -1,0 +1,11 @@
+.DS_Store
+*.xlsx
+*.xlsm
+*.xlsb
+*.xls
+*.csv
+*.controllo.json
+CS-Manager-controls.json
+TS-CHECKER-controlli.json
+data/*
+!data/README.md
