@@ -1,4 +1,4 @@
-# CS-Manager 1.29.0: installation
+# CS-Manager 2.0.0: installation
 
 1. Copy the entire `CS-Manager` folder to the target computer. Keep its folders together.
 2. Open `index.html` in a recent version of Chrome or Edge. No installation is required for the normal workflow.
@@ -30,6 +30,8 @@ The annual archive is read in batches during analysis. Keep the annual folder ac
 
 From a timesheet’s details, select Contact PM to review an editable email draft with the issues in English and the file name. Check the PM and recipient. The file is not attached automatically.
 
-In timesheet details, copy the suggested PDF filename ({CS}-{Person}-{Period}-Validated.pdf) and paste it into the browser save dialog. The suggestion requires a known CS, person and timesheet period.
+In timesheet details, copy the suggested PDF filename (the Excel filename followed by -VALIDATED.pdf) and paste it into the browser save dialog. The suggestion uses the original Excel filename.
 
-In timesheet details, use the Checks, Issues and Details tabs. The compact action bar follows the workflow: contact the PM, exclude if necessary, copy the suggested filename and print after validation.
+In timesheet details, use the Checks, Issues, Preview and History tabs. The compact action bar follows the workflow: contact the PM, exclude if necessary, copy the suggested filename and print after validation.
+
+Timesheet details places the validation checkbox and Save checks in the top toolbar. Saving checks does not automatically validate; printing requires a saved validation.

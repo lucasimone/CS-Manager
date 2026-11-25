@@ -1,5 +1,7 @@
 # CS-Manager changelog
 
+### 2.0.0
+- Redesigned timesheet validation workspace and derive PDF names from source filenames.
 ### 1.29.0
 - Reorganized timesheet details with compact sequential actions and a checks tab.
 ### 1.28.0
