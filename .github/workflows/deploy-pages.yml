@@ -1,0 +1,51 @@
+name: Deploy CS-Manager to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Regression tests
+        run: node --test tests/*.test.mjs
+      - name: Build synthetic test environment
+        run: python3 tests/demo/build.py
+      - name: Install browser test dependencies
+        run: npm install --no-save --package-lock=false @playwright/test@1.56.1 axe-core@4.10.3
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests
+        run: npx playwright test --config=playwright.config.cjs
+      - name: Stage only production application
+        run: |
+          mkdir -p pages-site
+          cp index.html pages-site/index.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages-site
+  deploy:
+    needs: verify
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy production artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
