@@ -34,8 +34,10 @@ test('isolated demo validates both timesheets and prepares financial summary',as
 for(const [width,height,language,dark,collapse] of [[1920,1080,'en',false,false],[1440,900,'fr',true,false],[1280,800,'it',false,true]]){
  test('visual evidence '+width+' '+language,async({page})=>{
   await page.setViewportSize({width,height});await ready(page);
+  await page.locator('#workspacePreferences summary').click();
   await page.locator('#language').selectOption(language);
   if(dark)await page.locator('#themeToggle').click();
+  await page.locator('#workspacePreferences summary').click();
   if(collapse)await page.locator('#burger').click();
   const prefix='test-results/visual/'+width+'-'+language;
   for(const [route,id] of routes){
@@ -51,7 +53,9 @@ for(const [width,height,language,dark,collapse] of [[1920,1080,'en',false,false]
   await page.locator('#rows button[data-i]').first().click();
   await expect(page.locator('#timesheetDetailView')).toBeVisible();
   await page.screenshot({path:prefix+'/timesheet-detail.png',fullPage:true});
+  await page.locator('#workspacePreferences summary').click();
   await page.locator('#openChangelog').click();
+  await page.locator('#workspacePreferences summary').click();
   await expect(page.locator('#changelogView')).toBeVisible();
   await page.screenshot({path:prefix+'/changelog.png',fullPage:true});
  });
