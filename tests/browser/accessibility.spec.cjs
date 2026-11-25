@@ -24,7 +24,7 @@ test('timesheet tabs follow keyboard navigation and focus',async({page})=>{
  await page.keyboard.press('Home');await expect(page.locator('#checksTab')).toBeFocused();
 });
 test('dark log success rows and demo banner have safe visual styles',async({page})=>{
- await ready(page);await page.locator('#themeToggle').click();
+ await ready(page);await page.locator('#workspacePreferences summary').click();await page.locator('#themeToggle').click();await page.locator('#workspacePreferences summary').click();
  await page.locator('[data-page="log"]').click();
  const success=page.locator('.log-entry.ok').first();
  await expect(success).toBeVisible();
@@ -36,7 +36,7 @@ test('capture WCAG accessibility audit baseline for representative pages',async(
  await ready(page);await page.addScriptTag({path:axe});
  const reports=[];
  for(const theme of ['light','dark']){
-  if(theme==='dark')await page.locator('#themeToggle').click();
+  if(theme==='dark'){await page.locator('#workspacePreferences summary').click();await page.locator('#themeToggle').click();await page.locator('#workspacePreferences summary').click();}
   for(const route of ['contracts','profiles','timesheets','delivery','consumption','settings','log','guide']){
    await page.locator('[data-page="'+route+'"]').click();
    const report=await page.evaluate(async()=>window.axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa']}}));
