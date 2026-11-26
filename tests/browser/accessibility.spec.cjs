@@ -45,6 +45,7 @@ test('capture WCAG accessibility audit baseline for representative pages',async(
  }
  await fs.mkdir('test-results/accessibility',{recursive:true});
  await fs.writeFile('test-results/accessibility/axe-baseline.json',JSON.stringify(reports,null,2));
- expect(reports).toHaveLength(16);
+ expect(reports).toHaveLength(18);
+ expect(reports.filter(r=>r.route==='overview').map(r=>r.theme).sort()).toEqual(['dark','light']);
  // Report-only baseline: existing violations remain visible for later remediation.
 });
