@@ -1,0 +1,14 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+const s=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const i=s.indexOf('function overviewData('),j=s.indexOf('function renderOverview(',i);
+assert.ok(i>=0&&j>i);
+const c=vm.createContext({calculateCost:x=>({cost:x.cost})});
+vm.runInContext(s.slice(i,j),c);
+const contracts=[{po:'A',status:'Active',budget:1000,available:100},{po:'B',status:'Active',budget:2000,available:900},{po:'B',status:'Closed',budget:2000,available:900},{po:'C',status:'Closed',budget:500,available:20},{po:'',status:'Active',budget:200,available:100}];
+const files=[{po:'A',expected:'2026-10',cost:50,status:'ok',controlValidated:true,controlPersisted:true},{po:'A',expected:'2026-10',cost:null,status:'review'},{po:'B',expected:'2026-10',cost:100,status:'ok'},{po:'C',expected:'2026-09',cost:70,status:'ok'},{po:'A',expected:'2026-10',cost:null,manualExclusion:{active:true}}];
+test('overview separates unique active PO balances from loaded costs and ambiguous budgets',()=>{const d=c.overviewData(contracts,files,[],'2026-10');assert.equal(d.active,2);assert.equal(d.activeWithoutPO,1);assert.equal(d.budget.value,1000);assert.equal(d.budget.known,1);assert.equal(d.available.value,100);assert.equal(d.cost,150);assert.equal(d.blocked,1);assert.equal(d.risks.length,2);assert.equal(d.monthly.length,2);assert.equal(d.monthly[0].cost,70);assert.equal(d.monthly[1].cost,150)});
+test('overview validation states are exclusive and do not treat unsaved validation as saved',()=>{const d=c.overviewData(contracts,[...files,{po:'A',expected:'2026-10',cost:10,status:'ok',controlValidated:true,controlPendingCommit:true}],[],'2026-10');assert.equal(d.count.validated,1);assert.equal(d.count.pending,1);assert.equal(d.count.issues,2);assert.equal(d.count.excluded,1);assert.equal(Object.values(d.count).reduce((a,b)=>a+b,0),d.total)});
+test('empty data is not represented as known zero cost or budget',()=>{const d=c.overviewData([],[],[]);assert.equal(d.cost,null);assert.equal(d.budget.known,0);assert.equal(d.total,0);assert.equal(d.monthly.length,0)});
