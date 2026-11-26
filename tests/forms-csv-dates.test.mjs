@@ -18,8 +18,8 @@ test('CSV escapes formulas but retains negative numeric values and quotes',()=>{
 });
 test('CSV filtering uses the same month, status and search as the table',()=>{
  const rows=[{file:'A',expected:'2026-10',status:'ok',controlValidated:true},{file:'B',expected:'2026-10',status:'review'},{file:'A2',expected:'2026-09',status:'ok',controlValidated:true}];
- const fields={'#search':{value:'a'},'#filter':{value:'validated'},'#viewMonth':{value:'2026-10'}};
- const c=context({results:rows,$:id=>fields[id]});vm.runInContext(between('function filteredTimesheets(','function update(){updateCosts();'),c);
+ const fields={'#search':{value:'a'},'#filter':{value:'validated'},'#viewMonth':{value:'2026-10'},'#viewContract':{value:''}};
+ const c=context({results:rows,$:id=>fields[id]});vm.runInContext(between('function filteredTimesheets(','function updateTimesheetContractFilter('),c);
  assert.equal(c.filteredTimesheets().length,1);assert.equal(c.filteredTimesheets()[0].file,'A');
  fields['#search'].value='';fields['#filter'].value='';fields['#viewMonth'].value='';assert.equal(c.filteredTimesheets().length,3);
 });
