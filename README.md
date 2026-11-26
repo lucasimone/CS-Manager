@@ -2,7 +2,7 @@
 
 **Contract management, timesheet validation and financial monitoring in a standalone browser application.**
 
-Current documented release: **2.1.0** — see the [changelog](docs/CHANGELOG.md).
+Current documented release: **2.2.0** — see the [changelog](docs/CHANGELOG.md).
 
 CS-Manager brings contract information, resource allocation, monthly timesheet review and financial delivery preparation into a single workspace. It reads selected Excel workbooks locally in the browser and stores review decisions in an annual JSON archive.
 
@@ -108,3 +108,8 @@ Report reproducible defects using anonymized examples. Include the application v
 - [User guide](docs/USER_GUIDE.md)
 - [Release history](docs/CHANGELOG.md)
 - [Data directory guidance](data/README.md)
+
+
+## Visual EP calendar (2.2.0)
+
+Open **EP Calendar** under monthly operations or use the calendar links in Delivery and Timesheet Detail. Navigate by month, inspect daily limits and annual totals. A zero-hour day is distinct from missing calendar data; incomplete periods do not display confirmed totals. Optional `Location` (`LU`, `BR`, `LU/BR`) and `Reason` columns in the Calendar sheet provide descriptive holiday labels only; the numeric `Hours` column remains authoritative. Red outlines identify analyzed, non-excluded timesheets exceeding a daily limit. Demo holidays are fictional. No external calendar or holiday lookup is performed.
