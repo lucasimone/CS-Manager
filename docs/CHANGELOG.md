@@ -1,5 +1,13 @@
 # CS-Manager changelog
 
+## 2.3.0 — TM monthly collection
+
+- Monitor expected, received, missing, duplicate and validated TM submissions by CS/PO and month, including contracts with no analyzed files.
+- Use current roster associations, contract date overlap and explicit resource inactivity; flag uncertain or duplicate associations.
+- Add Delivery drill-down, PM reminder draft and Portfolio Overview collection card.
+- Require complete, uniquely validated TM submissions before preparing financial confirmation. QTM/FP workflow remains unchanged.
+
+
 ## 2.2.0 — Visual EP working calendar
 
 - Monthly navigation and annual capacity summary from the loaded Excel Calendar sheet.
