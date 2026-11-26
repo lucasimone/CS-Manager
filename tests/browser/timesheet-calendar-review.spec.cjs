@@ -6,6 +6,33 @@ test('timesheet preview calendar navigates to source cells',async({page})=>{
  await page.locator('#rows button[data-i]').first().click();
  await page.locator('#detailsTab').click();
  await expect(page.locator('#tsCalendarGrid [data-ts-date]')).toHaveCount(31);
+ const regularDay=page.locator('#tsCalendarGrid [data-ts-state="ok"]').first();
+ const zeroHoursDay=page.locator('#tsCalendarGrid [data-ts-state="closed"]').first();
+ // The compact demo has no anomalies. Use a copy of a rendered day to check the error palette.
+ await regularDay.evaluate(day=>{
+  const issue=day.cloneNode(true);
+  issue.removeAttribute('data-ts-date');
+  issue.dataset.tsState='error';
+  day.after(issue);
+ });
+ const issueDay=page.locator('#tsCalendarGrid [data-ts-state="error"]');
+ const originalTheme=await page.locator('html').getAttribute('data-theme');
+
+ await page.locator('html').evaluate(html=>html.setAttribute('data-theme','light'));
+ await expect(regularDay).toHaveCSS('background-color','rgb(228, 245, 236)');
+ await expect(zeroHoursDay).toHaveCSS('background-color','rgb(228, 232, 238)');
+ await expect(issueDay).toHaveCSS('background-color','rgb(252, 225, 223)');
+
+ await page.locator('html').evaluate(html=>html.setAttribute('data-theme','dark'));
+ await expect(regularDay).toHaveCSS('background-color','rgb(36, 72, 61)');
+ await expect(zeroHoursDay).toHaveCSS('background-color','rgb(52, 66, 85)');
+ await expect(issueDay).toHaveCSS('background-color','rgb(85, 43, 48)');
+
+ await page.locator('html').evaluate((html,theme)=>{
+  if(theme===null) html.removeAttribute('data-theme');
+  else html.setAttribute('data-theme',theme);
+ },originalTheme);
+ await issueDay.evaluate(day=>day.remove());
  await page.locator('[data-ts-date="2026-10-01"]').click();
  await expect(page.locator('#tsCalendarDay [data-ts-cell]')).toHaveCount(3);
  await page.locator('#tsCalendarDay [data-ts-cell]').nth(1).click();
