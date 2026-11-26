@@ -16,3 +16,4 @@ playwright-report/
 test-results/
 tests/fixtures/generated/
 /demo/
+/tests/demo/generated/
