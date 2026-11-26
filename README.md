@@ -2,7 +2,7 @@
 
 **Contract management, timesheet validation and financial monitoring in a standalone browser application.**
 
-Current documented release: **2.5.0** — see the [changelog](docs/CHANGELOG.md).
+Current documented release: **2.6.0** — see the [changelog](docs/CHANGELOG.md).
 
 CS-Manager brings contract information, resource allocation, monthly timesheet review and financial delivery preparation into a single workspace. It reads selected Excel workbooks locally in the browser and stores review decisions in an annual JSON archive.
 
@@ -128,3 +128,8 @@ In Delivery select a TM CS/PO and reporting month. After validating the timeshee
 ## Financial delivery tracking (2.5.0)
 
 In Delivery, select a TM contract and reporting month, verify the complete collection, saved validations, PDF presence and manual DISP confirmations. Enter the recipient, prepare the financial summary, and send the email through your usual client. After actually sending it, enter the actual date/time and select Confirm sent. The annual control archive records the declared sending date, reviewer, recipient, subject, total, summary hash and exact document revision references. The application does not verify that the email was sent, received or unchanged in the email client. Refresh history to see existing records. Revoke an incorrect record with a reason; prior events remain in the archive. QTM/FP workflow is unchanged. The DEMO only simulates this workflow and never sends actual emails.
+
+
+## Timesheet calendar review (2.6.0)
+
+Open Timesheet Detail, then Preview. The calendar displays the actual timesheet month and compares declared daily hours with EP calendar limits. Click a date for OS/NS/additional hours, review flags and source cell references. Click a cell reference to highlight its Excel preview cell. Use the issues-only filter to isolate anomalies, missing dates and unavailable calendar data. Blank hours and permitted below-limit hours are distinguished from missing date rows; neither automatically indicates a validation failure. Mixed OS/NS is a visual review flag; existing validation rules and archived control signatures remain unchanged. Local holidays require metadata in the master Calendar sheet. Unrecognized months and incomplete calendar data are explicitly flagged.
