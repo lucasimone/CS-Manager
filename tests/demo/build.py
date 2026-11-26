@@ -23,7 +23,7 @@ source=source.replace('localStorage.','demoStorage.')
 once('id="launchDemo"','id="launchDemo" hidden')
 adapter=(root/'tests/demo/adapter.js').read_text(encoding='utf-8')
 once('</script></body></html>', '\nconst demoFixtures='+json.dumps(payload,separators=(',',':'))+';\nconst demoExpanded='+json.dumps(args.expanded)+';\n'+adapter+'\n</script></body></html>')
-out=root/'demo'/'index.html'
+out=root/'demo'/('expanded.html' if args.expanded else 'index.html')
 out.parent.mkdir(exist_ok=True)
 out.write_text(source,encoding='utf-8')
 print('Generated standalone QA edition:',out)
