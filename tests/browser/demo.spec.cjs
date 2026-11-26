@@ -1,5 +1,5 @@
 const {test,expect}=require('@playwright/test');
-const routes=[['contracts','contractsView'],['profiles','profilesView'],['timesheets','filesView'],['delivery','deliveryView'],['consumption','costView'],['settings','settingsView'],['log','activityLog'],['guide','guideView']];
+const routes=[['overview','overviewView'],['contracts','contractsView'],['profiles','profilesView'],['timesheets','filesView'],['delivery','deliveryView'],['consumption','costView'],['settings','settingsView'],['log','activityLog'],['guide','guideView']];
 async function ready(page){
  await page.goto('/demo/index.html');
  await expect(page.locator('#demoBanner')).toHaveAttribute('data-ready','true',{timeout:30000});
