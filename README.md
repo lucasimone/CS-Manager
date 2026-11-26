@@ -2,7 +2,7 @@
 
 **Contract management, timesheet validation and financial monitoring in a standalone browser application.**
 
-Current documented release: **2.0.1** — see the [changelog](docs/CHANGELOG.md).
+Current documented release: **2.1.0** — see the [changelog](docs/CHANGELOG.md).
 
 CS-Manager brings contract information, resource allocation, monthly timesheet review and financial delivery preparation into a single workspace. It reads selected Excel workbooks locally in the browser and stores review decisions in an annual JSON archive.
 
@@ -40,6 +40,7 @@ The Excel master workbook must contain:
 
 - `Contracts`
 - `Persone e tariffe PO`
+- `Calendar` — required for timesheet validation: `Date` and `Hours` columns, one row per calendar day, including zero-hour closures.
 
 The annual timesheet directory uses monthly folders named `01` through `12`. Review decisions are stored in `CS-Manager-controls.json` at the annual directory level. Legacy control files can be imported and retained as backups.
 
@@ -97,7 +98,7 @@ Use authorized storage locations and follow applicable organizational data-handl
 
 ## Quality assurance and roadmap
 
-Planned improvements include automated unit and browser regression tests, synthetic QA fixtures, improved draft protection, consistent reusable UI components, and more explicit monthly delivery readiness. These are roadmap items, not claims of implemented functionality or completed test coverage.
+Automated Node.js and Playwright regression tests run in GitHub Actions. The online demo uses fictional workbooks and a fictional working calendar; no institutional calendar or real personnel data is published. Monthly TM collection tracking and signature tracking remain future work.
 
 Report reproducible defects using anonymized examples. Include the application version, browser, expected behaviour and actual behaviour.
 
