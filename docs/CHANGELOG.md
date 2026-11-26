@@ -1,5 +1,15 @@
 # CS-Manager changelog
 
+## 2.1.0 — EP calendar validation
+
+- Read the working calendar from the master workbook (`Calendar`, `Date`, `Hours`).
+- Check daily OS + NS limits, zero-hour closures and monthly maximum; block manual overrides of failed calendar checks.
+- Display calendar coverage and monthly maximum in settings and timesheet details.
+- Expand fictional demo calendar and include closure/short-day violations.
+- Consolidates portfolio overview, financial workspace, contract/timesheet navigation and online demo improvements since 2.0.3.
+- Existing validation records must be reassessed against the new control context. The institutional calendar is not distributed.
+
+
 ### 2.0.3
 - Protect contract and resource drafts and correct CSV exports and Excel date handling.
 ### 2.0.2
