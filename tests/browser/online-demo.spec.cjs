@@ -1,0 +1,36 @@
+const {test,expect}=require('@playwright/test');
+test('production preferences opens demo in a separate tab',async({page,context})=>{
+ await page.goto('/');
+ await page.locator('#workspacePreferences summary').click();
+ const link=page.locator('#launchDemo');
+ await expect(link).toBeVisible();
+ await expect(link).toHaveAttribute('href','demo/');
+ await expect(link).toHaveAttribute('target','_blank');
+ const popupPromise=context.waitForEvent('page');
+ await link.click();
+ const demo=await popupPromise;
+ await expect(demo.locator('#demoBanner')).toHaveAttribute('data-ready','true',{timeout:30000});
+ await expect(page.locator('#demoBanner')).toHaveCount(0);
+ await demo.locator('#workspacePreferences summary').click();
+ await expect(demo.locator('#launchDemo')).not.toBeVisible();
+ await demo.close();
+});
+test('expanded synthetic portfolio loads isolated data and varied operational states',async({page})=>{
+ test.setTimeout(120000);
+ await page.goto('/');
+ await page.evaluate(()=>{localStorage.setItem('ts-checker-user','production sentinel');localStorage.setItem('ts-checker-theme','dark')});
+ await page.goto('/demo/expanded.html');
+ await expect(page.locator('#demoBanner')).toHaveAttribute('data-ready','true',{timeout:90000});
+ await expect(page.locator('#contractRows tr')).toHaveCount(12);
+ await expect(page.locator('#userName')).toHaveValue('Demo reviewer');
+ await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+ const snapshot=await page.evaluate(()=>({contracts:contractDetails.length,resources:roster.length,months:[...new Set(results.map(x=>x.expected))].sort(),validated:results.filter(x=>x.controlValidated&&!x.manualExclusion?.active).length,excluded:results.filter(x=>x.manualExclusion?.active).length,issues:results.filter(x=>x.status==='review'||x.status==='error').length,unvalidated:results.filter(x=>!x.controlValidated&&!x.manualExclusion?.active).length,localUser:localStorage.getItem('ts-checker-user'),localTheme:localStorage.getItem('ts-checker-theme')}));
+ expect(snapshot.contracts).toBe(12);expect(snapshot.resources).toBe(40);expect(snapshot.months).toEqual(['2026-08','2026-09','2026-10']);
+ expect(snapshot.validated).toBeGreaterThan(0);expect(snapshot.excluded).toBeGreaterThan(0);expect(snapshot.issues).toBeGreaterThan(0);expect(snapshot.unvalidated).toBeGreaterThan(0);
+ expect(snapshot.localUser).toBe('production sentinel');expect(snapshot.localTheme).toBe('dark');
+ await page.locator('[data-page="timesheets"]').click();
+ await page.screenshot({path:'test-results/expanded-demo-timesheets.png',fullPage:true});
+ await page.locator('[data-page="consumption"]').click();
+ await expect(page.locator('#costPortfolio')).toBeVisible();
+ await page.screenshot({path:'test-results/expanded-demo-consumption.png',fullPage:true});
+});
