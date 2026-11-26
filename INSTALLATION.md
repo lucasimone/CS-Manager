@@ -1,4 +1,4 @@
-# CS-Manager 2.6.0: installation
+# CS-Manager 2.6.1: installation
 
 1. Copy the entire `CS-Manager` folder to the target computer. Keep its folders together.
 2. Open `index.html` in a recent version of Chrome or Edge. No installation is required for the normal workflow.

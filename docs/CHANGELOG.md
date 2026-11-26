@@ -1,5 +1,9 @@
 # CS-Manager changelog
 
+## 2.6.1 — Timesheet calendar readability
+
+- Restore the daily status colours in the timesheet preview calendar in light and dark mode.
+
 ## 2.6.0 — Timesheet calendar review
 
 - Add a daily calendar in Timesheet Detail / Preview, displaying declared versus EP maximum hours and OS/NS breakdown.

@@ -2,7 +2,7 @@
 
 **Contract management, timesheet validation and financial monitoring in a standalone browser application.**
 
-Current documented release: **2.6.0** — see the [changelog](docs/CHANGELOG.md).
+Current documented release: **2.6.1** — see the [changelog](docs/CHANGELOG.md).
 
 CS-Manager brings contract information, resource allocation, monthly timesheet review and financial delivery preparation into a single workspace. It reads selected Excel workbooks locally in the browser and stores review decisions in an annual JSON archive.
 
