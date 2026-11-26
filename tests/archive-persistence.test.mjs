@@ -114,3 +114,17 @@ test('exclusion requires reason and removes saved validation',async()=>{
 test('invalid relative path is rejected',async()=>{
  const {store,dir}=setup();await assert.rejects(store.readControl(dir,'../demo.xlsx'),/Percorso/);
 });
+
+test('manual DISP confirmation persists with PDF hash and supports revocation',async()=>{
+ const {store,dir,args,source}=setup(),saved=await store.save(args),pdf={name:'demo-VALIDATED.pdf',content:'synthetic pdf',async getFile(){return {text:async()=>this.content}}};
+ const data={directory:dir,path:args.path,sourceHandle:source,sourceHash:args.expectedSourceHash,revision:saved.revision,signature:saved.data.context.signature,pdfHandle:pdf,pdfHash:digest(pdf.content),expected:null,signed:true,author:'QA'};
+ const confirmed=await store.savePdfConfirmation(data);assert.equal(confirmed.signed,true);assert.equal((await store.readPdfConfirmations(dir))[args.path].pdfHash,data.pdfHash);
+ const revoked=await store.savePdfConfirmation({...data,expected:confirmed,signed:false});assert.equal(revoked.signed,false);assert.equal(revoked.history.length,1);assert.equal(revoked.history[0].signed,true);
+ await assert.rejects(store.savePdfConfirmation(data),/altra sessione/);
+});
+test('changed PDF or invalidated source validation cannot be confirmed',async()=>{
+ const {store,dir,args,source}=setup(),saved=await store.save(args),pdf={name:'demo-VALIDATED.pdf',content:'synthetic pdf',async getFile(){return {text:async()=>this.content}}};
+ const data={directory:dir,path:args.path,sourceHandle:source,sourceHash:args.expectedSourceHash,revision:saved.revision,signature:saved.data.context.signature,pdfHandle:pdf,pdfHash:digest(pdf.content),expected:null,signed:true,author:'QA'};
+ pdf.content='changed';await assert.rejects(store.savePdfConfirmation(data),/PDF modificato/);
+ pdf.content='synthetic pdf';await store.save({...args,expectedRevision:saved.revision,validated:false});await assert.rejects(store.savePdfConfirmation(data),/Validazione modificata/);
+});
