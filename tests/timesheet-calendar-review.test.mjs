@@ -1,0 +1,14 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+const src=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const part=(a,b)=>src.slice(src.indexOf(a),src.indexOf(b,src.indexOf(a)+a.length));
+const c=vm.createContext({fmt:String});
+vm.runInContext(part('function calendarDate(','function evaluateTimesheetControls(')+part('function dailyHoursIssue(','function splitTimesheetProfile(')+part('function timesheetCalendarReview(','var tsCalendarSelection='),c);
+const dates=Object.fromEntries(Array.from({length:31},(_,i)=>['2026-10-'+String(i+1).padStart(2,'0'),i===1?5:i===14?0:8.5]));
+const row=(d,os,ns=0,extra={})=>({date:'2026-10-'+String(d).padStart(2,'0'),os,ns,extra:0,...extra});
+const review=(rows,calendar={dates,errors:[]})=>c.timesheetCalendarReview({actualMonth:'2026-10',calendar,calendarRows:rows,days:rows.filter(x=>!x.empty),hoursLayoutValid:true,reportedTotal:0});
+test('daily review distinguishes missing dates, blank hours, partial hours and limits',()=>{let r=review([row(1,0,0,{empty:true}),row(2,8.5),row(5,4.25),row(15,0,0,{empty:true})]);assert.equal(r.days[0].state,'blank');assert.equal(r.days[1].state,'error');assert.equal(r.days[2].state,'missing');assert.equal(r.days[4].state,'partial');assert.equal(r.days[14].state,'closed')});
+test('duplicate rows, non-numeric hours and mixed OS/NS are highlighted',()=>{let r=review([row(1,4.25),row(1,4.25),row(2,null),row(5,4.25,4.25)]);assert.ok(r.days[0].problems.includes('Data duplicata'));assert.equal(r.days[1].total,null);assert.ok(r.days[4].problems.includes('OS e NS nello stesso giorno'))});
+test('incomplete EP calendar never presents a verified limit',()=>{let r=review([row(1,8.5)],{dates:{'2026-10-01':8.5},errors:[]});assert.equal(r.maximum,null);assert.equal(r.days[0].state,'unknown')});

@@ -1,5 +1,13 @@
 # CS-Manager changelog
 
+## 2.6.0 — Timesheet calendar review
+
+- Add a daily calendar in Timesheet Detail / Preview, displaying declared versus EP maximum hours and OS/NS breakdown.
+- Distinguish missing date rows, blank hour cells, partial hours, zero-hour days and anomalies. Flag duplicate dates, invalid hours, additional hours and mixed OS/NS for review.
+- Filter to anomalies/missing data and jump directly to the corresponding Excel preview cells.
+- Display local holiday metadata where supplied. Existing automatic validation rules and saved control signatures are unchanged.
+
+
 ## 2.5.0 — Financial delivery tracking
 
 - Explicitly record TM financial email sending after all validation and PDF/signature checks.
