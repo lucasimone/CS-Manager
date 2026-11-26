@@ -65,13 +65,17 @@ async function startDemo(){
  if(results.length!==expectedFiles||!masterLoaded)throw Error('Synthetic analysis failed');
  if(demoExpanded){
    // Seed a representative mix of saved validation states via the real archive store.
+   const seedBatch=await controlStore.beginBatch(year);
    for(let i=0;i<results.length;i++){
      const x=results[i];
      if(x.status!=='ok'||!x.controlEvaluation||!x.sourceHandle||!x.controlSignature||x.controlBlocked)continue;
      if(i%3!==0){
-       await controlStore.save({directory:x.controlDirectory,path:x.controlPath,sourceHandle:x.sourceHandle,expectedSourceHash:x.controlSourceHash,expectedRevision:x.controlRevision,context:x.controlContext,checks:x.controlEvaluation.checks,author:'Demo reviewer',validated:true});
+       await seedBatch.stage({directory:x.controlDirectory,path:x.controlPath,sourceHandle:x.sourceHandle,expectedSourceHash:x.controlSourceHash,expectedRevision:x.controlRevision,context:x.controlContext,checks:x.controlEvaluation.checks,author:'Demo reviewer',validated:true});
      }
    }
+   await seedBatch.commit();
+   const candidates=results.filter(x=>x.status==='ok'&&x.controlEvaluation&&x.sourceHandle&&!x.controlBlocked).slice(0,2);
+   for(const x of candidates){const current=await controlStore.readControl(year,x.controlPath);await controlStore.setExclusion(year,x.controlPath,x.sourceHandle,x.controlSourceHash,null,current.revision,true,'Synthetic demonstration exclusion','Demo reviewer');}
    await runAnalysis();
  }
  showPage('contracts');banner.dataset.ready='true';
