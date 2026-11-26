@@ -6,7 +6,7 @@ for(const width of [1280,1440,1920]){
   await expect(page.locator('#demoBanner')).toHaveAttribute('data-ready','true',{timeout:30000});
   await expect(page.locator('#quickAnalyze')).toBeVisible();
   await expect(page.locator('#openAlerts')).toBeVisible();
-  await expect(page.locator('.nav-group-label')).toHaveCount(3);
+  await expect(page.locator('.nav-group-label')).toHaveCount(4);
   await expect(page.locator('#language')).not.toBeVisible();
   await page.locator('#workspacePreferences summary').click();
   await page.locator('#language').selectOption('en');
