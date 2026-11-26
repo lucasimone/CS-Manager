@@ -17,7 +17,9 @@ jobs:
         with:
           node-version: '22'
       - name: Generate synthetic Excel files
-        run: python3 tests/demo/build.py
+        run: |
+          python3 tests/demo/build.py
+          python3 tests/demo/build.py --expanded
       - name: Install test-only dependencies
         run: npm install --no-save --package-lock=false @playwright/test@1.56.1 axe-core@4.10.3
       - name: Install Chromium

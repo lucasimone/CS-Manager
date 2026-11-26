@@ -21,17 +21,20 @@ jobs:
       - name: Regression tests
         run: node --test tests/*.test.mjs
       - name: Build synthetic test environment
-        run: python3 tests/demo/build.py
+        run: |
+          python3 tests/demo/build.py
+          python3 tests/demo/build.py --expanded
       - name: Install browser test dependencies
         run: npm install --no-save --package-lock=false @playwright/test@1.56.1 axe-core@4.10.3
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Browser tests
         run: npx playwright test --config=playwright.config.cjs
-      - name: Stage only production application
+      - name: Stage production and synthetic demo only
         run: |
-          mkdir -p pages-site
+          mkdir -p pages-site/demo
           cp index.html pages-site/index.html
+          cp demo/expanded.html pages-site/demo/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: pages-site
