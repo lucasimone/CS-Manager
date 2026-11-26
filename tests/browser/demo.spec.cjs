@@ -20,6 +20,7 @@ test('isolated demo validates both timesheets and prepares financial summary',as
  await page.locator('[data-page="delivery"]').click();
  await page.locator('#mailMonth').selectOption('2026-10');
  await page.locator('#mailCS').selectOption('DEMO/CS001');
+ await page.locator('#mailRecipient').fill('demo@example.invalid');
  await page.locator('#mailLocation').fill('DEMO/excel');
  await page.locator('#mailPdfLocation').fill('DEMO/pdf');
  await page.locator('#prepareFinanceMail').click();
@@ -33,6 +34,13 @@ test('isolated demo validates both timesheets and prepares financial summary',as
  }
  await page.locator('#prepareFinanceMail').click();
  await expect(page.locator('#financeMailPreview')).toHaveValue(/Monthly total: €1,420\.00/);
+ await expect(page.locator('#confirmFinancialSent')).toBeEnabled();
+ await expect(page.locator('#financialHistory')).toContainText('Nessuna consegna registrata');
+ await page.locator('#confirmFinancialSent').click();
+ await expect(page.locator('#financialHistory')).toContainText('Invio dichiarato');
+ await expect(page.locator('#financialHistory')).toContainText('demo@example.invalid');
+ await page.locator('#reloadFinancialHistory').click();
+ await expect(page.locator('#financialHistory')).toContainText('Invio dichiarato');
  await page.screenshot({path:'test-results/demo-delivery-validated.png',fullPage:true});
  await page.reload();
  await expect(page.locator('#demoBanner')).toHaveAttribute('data-ready','true');
