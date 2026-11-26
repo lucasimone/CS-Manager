@@ -128,3 +128,23 @@ test('changed PDF or invalidated source validation cannot be confirmed',async()=
  pdf.content='changed';await assert.rejects(store.savePdfConfirmation(data),/PDF modificato/);
  pdf.content='synthetic pdf';await store.save({...args,expectedRevision:saved.revision,validated:false});await assert.rejects(store.savePdfConfirmation(data),/Validazione modificata/);
 });
+
+test('financial delivery records explicit send, prevents duplicate and preserves revocation history',async()=>{
+ const {store,dir,args,source}=setup(),saved=await store.save(args),pdf={name:'demo-VALIDATED.pdf',content:'synthetic pdf',async getFile(){return {text:async()=>this.content}}};
+ const sign=await store.savePdfConfirmation({directory:dir,path:args.path,sourceHandle:source,sourceHash:args.expectedSourceHash,revision:saved.revision,signature:saved.data.context.signature,pdfHandle:pdf,pdfHash:digest(pdf.content),expected:null,signed:true,author:'QA'});
+ const d={directory:dir,month:'2026-10',po:'1',cs:'CS1',documents:[{path:args.path,sourceHash:args.expectedSourceHash,revision:saved.revision,pdfHash:sign.pdfHash,confirmedAt:sign.at}],recipient:'demo@example.invalid',subject:'Synthetic delivery',bodyHash:digest('body'),total:710,author:'QA',sentAt:'2026-01-01T00:00:00Z',expected:null,action:'sent'};
+ const sent=await store.recordDelivery(d);assert.equal(sent.status,'sent');assert.equal((await store.readDeliveries(dir))[JSON.stringify(['2026-10','1','CS1'])].total,710);
+ await assert.rejects(store.recordDelivery({...d,expected:sent}),/già registrata/);
+ await assert.rejects(store.recordDelivery({...d,expected:sent,action:'revoke',reason:''}),/motivo/);
+ const revoked=await store.recordDelivery({...d,expected:sent,action:'revoke',reason:'Correction'});assert.equal(revoked.status,'revoked');assert.equal(revoked.history[0].status,'sent');
+ await assert.rejects(store.recordDelivery(d),/altra sessione/);
+});
+test('financial delivery refuses invalidated signature and future timestamps',async()=>{
+ const {store,dir,args,source}=setup(),saved=await store.save(args),pdf={name:'demo-VALIDATED.pdf',content:'synthetic pdf',async getFile(){return {text:async()=>this.content}}};
+ const signArgs={directory:dir,path:args.path,sourceHandle:source,sourceHash:args.expectedSourceHash,revision:saved.revision,signature:saved.data.context.signature,pdfHandle:pdf,pdfHash:digest(pdf.content),expected:null,signed:true,author:'QA'};
+ const sign=await store.savePdfConfirmation(signArgs);
+ const d={directory:dir,month:'2026-10',po:'1',cs:'CS1',documents:[{path:args.path,sourceHash:args.expectedSourceHash,revision:saved.revision,pdfHash:sign.pdfHash,confirmedAt:sign.at}],recipient:'demo@example.invalid',subject:'Synthetic delivery',bodyHash:digest('body'),total:710,author:'QA',sentAt:'2026-01-01T00:00:00Z',expected:null,action:'sent'};
+ await assert.rejects(store.recordDelivery({...d,sentAt:'2099-01-01T00:00:00Z'}),/non validi/);
+ await store.savePdfConfirmation({...signArgs,expected:sign,signed:false});
+ await assert.rejects(store.recordDelivery(d),/firma modificata/);
+});
