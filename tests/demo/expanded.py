@@ -34,11 +34,14 @@ for k,title in enumerate(titles,1):
             for day in range(1,calendar.monthrange(2026,actual)[1]+1):
                 row=10+day;c[(row,1)]=day
                 wd=datetime.date(2026,actual,day).weekday()
-                if wd>=5:continue
-                h=5 if wd==4 else 8.5
+                h=lib['synthetic_hours'](datetime.date(2026,actual,day))
+                # Deliberate examples: closure work and excess on short days.
+                if k==1 and j==0 and month==10 and day==15:h=8.5
+                if k==4 and j==0 and month==9 and wd==4 and h==5:h=8.5
+                if not h:continue
                 if (day+k+j)%4==0:c[(row,3)]=h;os+=h
                 else:c[(row,4)]=h;ns+=h
             c.update({(42,2):'TOTAL',(42,3):('SUM(D11:D41)',os),(42,4):('SUM(E11:E41)',ns),(43,3):('D42+E42',os+ns)})
             write(out/'2026'/f'{month:02d}'/f'CS{k:03d}'/f'resource-{k:02d}-{j+1:02d}.xlsx',{'TIMESHEET':c})
-write(out/'master.xlsx',{'Contracts':rows(contracts),'Persone e tariffe PO':rows(people)})
+write(out/'master.xlsx',{'Calendar':lib['synthetic_calendar'](),'Contracts':rows(contracts),'Persone e tariffe PO':rows(people)})
 print('Synthetic portfolio:',len(contracts)-1,'contracts,',len(people)-1,'resources')
