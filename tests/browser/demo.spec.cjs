@@ -23,6 +23,15 @@ test('isolated demo validates both timesheets and prepares financial summary',as
  await page.locator('#mailLocation').fill('DEMO/excel');
  await page.locator('#mailPdfLocation').fill('DEMO/pdf');
  await page.locator('#prepareFinanceMail').click();
+ await expect(page.locator('#financeMailStatus')).toContainText('PDF');
+ await page.locator('#pickPdfFolder').click();
+ await expect(page.locator('#pdfTrackingRows [data-signature-index]')).toHaveCount(2);
+ page.on('dialog',dialog=>dialog.accept());
+ for(let i=0;i<2;i++){
+   await page.locator('#pdfTrackingRows [data-signature-index]').nth(i).click();
+   await expect(page.locator('#pdfTrackingRows [data-signature-index]').nth(i)).toHaveText('Revoca conferma');
+ }
+ await page.locator('#prepareFinanceMail').click();
  await expect(page.locator('#financeMailPreview')).toHaveValue(/Monthly total: €1,420\.00/);
  await page.screenshot({path:'test-results/demo-delivery-validated.png',fullPage:true});
  await page.reload();

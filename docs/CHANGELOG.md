@@ -1,5 +1,13 @@
 # CS-Manager changelog
 
+## 2.4.0 — PDF and DISP signature tracking
+
+- Check expected PDF names in a user-selected folder, with ambiguity detection and content hashes.
+- Record manual DISP signature confirmations and revocations in the annual control archive, bound to the source, validation revision and PDF hash.
+- Recheck PDF presence and confirmations before preparing or opening TM financial delivery drafts. No cryptographic signature verification is performed.
+- Add isolated synthetic PDF placeholders to DEMO and regression coverage.
+
+
 ## 2.3.0 — TM monthly collection
 
 - Monitor expected, received, missing, duplicate and validated TM submissions by CS/PO and month, including contracts with no analyzed files.
