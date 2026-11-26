@@ -8,7 +8,14 @@ test('timesheet preview calendar navigates to source cells',async({page})=>{
  await expect(page.locator('#tsCalendarGrid [data-ts-date]')).toHaveCount(31);
  const regularDay=page.locator('#tsCalendarGrid [data-ts-state="ok"]').first();
  const zeroHoursDay=page.locator('#tsCalendarGrid [data-ts-state="closed"]').first();
- const issueDay=page.locator('#tsCalendarGrid [data-ts-state="error"]').first();
+ // The compact demo has no anomalies. Use a copy of a rendered day to check the error palette.
+ await regularDay.evaluate(day=>{
+  const issue=day.cloneNode(true);
+  issue.removeAttribute('data-ts-date');
+  issue.dataset.tsState='error';
+  day.after(issue);
+ });
+ const issueDay=page.locator('#tsCalendarGrid [data-ts-state="error"]');
  const originalTheme=await page.locator('html').getAttribute('data-theme');
 
  await page.locator('html').evaluate(html=>html.setAttribute('data-theme','light'));
@@ -25,6 +32,7 @@ test('timesheet preview calendar navigates to source cells',async({page})=>{
   if(theme===null) html.removeAttribute('data-theme');
   else html.setAttribute('data-theme',theme);
  },originalTheme);
+ await issueDay.evaluate(day=>day.remove());
  await page.locator('[data-ts-date="2026-10-01"]').click();
  await expect(page.locator('#tsCalendarDay [data-ts-cell]')).toHaveCount(3);
  await page.locator('#tsCalendarDay [data-ts-cell]').nth(1).click();
