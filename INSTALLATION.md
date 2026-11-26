@@ -1,4 +1,4 @@
-# CS-Manager 2.0.3: installation
+# CS-Manager 2.1.0: installation
 
 1. Copy the entire `CS-Manager` folder to the target computer. Keep its folders together.
 2. Open `index.html` in a recent version of Chrome or Edge. No installation is required for the normal workflow.
@@ -35,3 +35,8 @@ In timesheet details, copy the suggested PDF filename (the Excel filename follow
 In timesheet details, use the Checks, Issues, Preview and History tabs. The compact action bar follows the workflow: contact the PM, exclude if necessary, copy the suggested filename and print after validation.
 
 Timesheet details places the validation checkbox and Save checks in the top toolbar. Saving checks does not automatically validate; printing requires a saved validation.
+
+
+## Working calendar requirement (2.1.0)
+
+For timesheet validation, the master workbook must contain a `Calendar` sheet with `Date` and `Hours` headers and explicit daily limits, including zero-hour closures. Check calendar coverage in Settings before analysis. See the [user guide](docs/USER_GUIDE.md).
