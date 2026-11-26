@@ -1,5 +1,12 @@
 # CS-Manager changelog
 
+## 2.5.0 — Financial delivery tracking
+
+- Explicitly record TM financial email sending after all validation and PDF/signature checks.
+- Preserve delivery recipient, declared sending date, reviewer, financial total, summary hash and source/PDF revision references in the annual archive.
+- Prevent duplicate confirmations and retain revocation history. No automatic verification of email sending or receipt.
+
+
 ## 2.4.0 — PDF and DISP signature tracking
 
 - Check expected PDF names in a user-selected folder, with ambiguity detection and content hashes.
