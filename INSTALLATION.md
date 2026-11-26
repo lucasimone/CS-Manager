@@ -1,4 +1,4 @@
-# CS-Manager 2.1.0: installation
+# CS-Manager 2.2.0: installation
 
 1. Copy the entire `CS-Manager` folder to the target computer. Keep its folders together.
 2. Open `index.html` in a recent version of Chrome or Edge. No installation is required for the normal workflow.
@@ -40,3 +40,8 @@ Timesheet details places the validation checkbox and Save checks in the top tool
 ## Working calendar requirement (2.1.0)
 
 For timesheet validation, the master workbook must contain a `Calendar` sheet with `Date` and `Hours` headers and explicit daily limits, including zero-hour closures. Check calendar coverage in Settings before analysis. See the [user guide](docs/USER_GUIDE.md).
+
+
+## Visual EP calendar (2.2.0)
+
+Open **EP Calendar** under monthly operations or use the calendar links in Delivery and Timesheet Detail. Navigate by month, inspect daily limits and annual totals. A zero-hour day is distinct from missing calendar data; incomplete periods do not display confirmed totals. Optional `Location` (`LU`, `BR`, `LU/BR`) and `Reason` columns in the Calendar sheet provide descriptive holiday labels only; the numeric `Hours` column remains authoritative. Red outlines identify analyzed, non-excluded timesheets exceeding a daily limit. Demo holidays are fictional. No external calendar or holiday lookup is performed.
