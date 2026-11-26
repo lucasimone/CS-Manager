@@ -13,7 +13,7 @@ function setup(){
   const c=vm.createContext({results:[],roster:[],pdfDirty:false});
   vm.runInContext([
     between('const norm=','/* CS-Manager: pure control calculations.'),
-    between('function evaluateTimesheetControls(','/* CS-Manager sidecar storage.'),
+    between('function calendarDate(','/* CS-Manager sidecar storage.'),
     between('function datePeriod(','async function loadMaster('),
     between('function dailyHoursIssue(','async function parseTS('),
     between('function calculateCost(','function renderMonthly('),
@@ -26,16 +26,16 @@ function setup(){
 }
 // Synthetic examples only. Expected amounts are independently specified.
 function facts(overrides={}){
-  return {poValid:true,csValid:true,personMatchCount:1,hoursLayoutValid:true,
+  return {calendar:{dates:Object.fromEntries(Array.from({length:31},(_,i)=>['2026-10-'+String(i+1).padStart(2,'0'),8.5])),errors:[]},poValid:true,csValid:true,personMatchCount:1,hoursLayoutValid:true,
     days:[{date:'2026-10-01',ns:8.5,os:0},{date:'2026-10-02',ns:0,os:5}],
     reportedNS:8.5,reportedOS:5,reportedTotal:13.5,
     expectedMonth:'2026-10',actualMonth:'2026-10',formulaScanComplete:true,
     formulaErrors:[],hourIssues:[],duplicate:false,...overrides};
 }
 const state=(r,id)=>r.checks.find(x=>x.id===id);
-test('all ten checks pass for consistent synthetic input',()=>{
+test('all twelve checks pass for consistent synthetic input',()=>{
   const r=setup().evaluateTimesheetControls(facts());
-  assert.equal(r.checks.length,10);assert.equal(r.valid,true);
+  assert.equal(r.checks.length,12);assert.equal(r.valid,true);
   assert.equal(r.ns,8.5);assert.equal(r.os,5);assert.equal(r.total,13.5);
 });
 for(const [label,overrides,id] of [
@@ -83,8 +83,8 @@ test('manual rejection remains blocking despite automatic OK',()=>{
 });
 test('working hours allow normal days, half days and short Friday',()=>{
   const c=setup();
-  for(const [h,d] of [[0,1],[4.25,1],[8.5,1],[5,5]])assert.equal(c.dailyHoursIssue(h,d),'');
-  for(const [h,d] of [[5,1],[6.5,1],[9,5]])assert.notEqual(c.dailyHoursIssue(h,d),'');
+  for(const [h,d] of [[0,1],[4.25,1],[8.5,1],[5,5],[5,1]])assert.equal(c.dailyHoursIssue(h,d),'');
+  for(const [h,d] of [[6.5,1],[9,5]])assert.notEqual(c.dailyHoursIssue(h,d),'');
 });
 test('reporting periods parse both Excel date systems and reject invalid calendar dates',()=>{
   const c=setup();

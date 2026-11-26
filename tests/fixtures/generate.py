@@ -1,5 +1,6 @@
 """Generate synthetic XLSX fixtures using only Python's standard library."""
 from pathlib import Path
+import datetime,calendar
 from zipfile import ZipFile, ZIP_DEFLATED
 from xml.sax.saxutils import escape
 ROOT=Path(__file__).resolve().parent/"generated"
@@ -30,9 +31,20 @@ def write(path,sheets,date1904=False):
         for i,name in enumerate(names,1):z.writestr(f'xl/worksheets/sheet{i}.xml',sheet(sheets[name]))
 def rows(values):
     return {(i,j):v for i,row in enumerate(values,1) for j,v in enumerate(row)}
+def synthetic_hours(day):
+    # Fictional calendar, not the institutional calendar.
+    if day.weekday()>=5 or (day.month,day.day) in {(1,1),(8,17),(9,16),(10,15),(12,24),(12,25),(12,28),(12,29),(12,30),(12,31)}:return 0
+    if day.weekday()==4:return 8.5 if day.day%2==0 and day!=datetime.date(2026,10,2) else 5
+    return 8.5
+def synthetic_calendar():
+    data=[['Month','Date','Hours','Day']]
+    for i in range(365):
+        d=datetime.date(2026,1,1)+datetime.timedelta(days=i)
+        data.append([d.strftime('%B'),(d-datetime.date(1899,12,30)).days,synthetic_hours(d),d.strftime('%A')])
+    return rows(data)
 ref='DEMO/CS001'
 po='1000000001'
-write(ROOT/'master.xlsx',{'Contracts':rows([['CS','PO','VALID_FROM','VALID_TO','FTU','Owner','BUDGET','Available','TYPE','Status','TITLE'],[ref,po,'2026-01-01','2026-12-31',2,'Demo',100000,90000,'TM','Active','Synthetic contract']]),'Persone e tariffe PO':rows([['Profilo','Nome e cognome','PO','PM','Tariffa NS / ora','Tariffa OS / ora','Contratto','Foglio origine','Riga origine','Note','Active','Contractor'],['DEV','Demo Standard',po,'Demo PM',40,60,ref,'',0,'','yes','Demo company'],['DEV','Demo Vtwo',po,'Demo PM',40,60,ref,'',0,'','yes','Demo company']])})
+write(ROOT/'master.xlsx',{'Calendar':synthetic_calendar(),'Contracts':rows([['CS','PO','VALID_FROM','VALID_TO','FTU','Owner','BUDGET','Available','TYPE','Status','TITLE'],[ref,po,'2026-01-01','2026-12-31',2,'Demo',100000,90000,'TM','Active','Synthetic contract']]),'Persone e tariffe PO':rows([['Profilo','Nome e cognome','PO','PM','Tariffa NS / ora','Tariffa OS / ora','Contratto','Foglio origine','Riga origine','Note','Active','Contractor'],['DEV','Demo Standard',po,'Demo PM',40,60,ref,'',0,'','yes','Demo company'],['DEV','Demo Vtwo',po,'Demo PM',40,60,ref,'',0,'','yes','Demo company']])})
 def timesheet(v2=False,wrong=False,formula_missing=False):
     c={(4,3):ref,(5,3):po,(6,3):'2026-09' if wrong else '2026-10',(10,1):'DAY',(10,3):'On-site',(10,4):'Near-site',(10,5):'Number of additional hours'}
     if v2:c.update({(7,1):'FAMILY NAME',(7,3):'Vtwo',(8,1):'FIRST NAME',(8,3):'Demo',(9,3):'DEV-STD'})
