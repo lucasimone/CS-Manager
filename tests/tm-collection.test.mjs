@@ -1,0 +1,16 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+const src=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const part=(a,b)=>src.slice(src.indexOf(a),src.indexOf(b,src.indexOf(a)+a.length));
+const c=vm.createContext({norm:x=>String(x??'').trim().toUpperCase()});
+vm.runInContext(part('function calendarDate(','function calendarFromRows(')+part('function profileStatus(','function renderProfiles(')+part('function tmCollection(','function collectionMonths('),c);
+const contract=(po,ref,type='TM',extra={})=>({po,ref,type,status:'Active',from:'2026-01-01',to:'2026-12-31',...extra});
+const person=(person,po='1',ref='CS1',activeRaw='yes')=>({person,po,ref,activeRaw});
+const file=(person,extra={})=>({person,po:'1',reference:'CS1',expected:'2026-10',period:'2026-10',status:'ok',controlValidated:true,controlPersisted:true,...extra});
+test('TM monitoring includes contracts with zero files and excludes QTM and inactive people',()=>{let d=c.tmCollection('2026-10',[contract('1','CS1'),contract('2','CS2'),contract('3','CS3','QTM')],[person('A'),person('B','1','CS1','no'),person('C','2','CS2'),person('D','3','CS3')],[file('A')]);assert.equal(d.groups.length,2);assert.equal(d.groups[0].expected,1);assert.equal(d.groups[0].validated,1);assert.equal(d.groups[1].missing,1)});
+test('duplicates count once as received, never as validated',()=>{let g=c.tmCollection('2026-10',[contract('1','CS1')],[person('A')],[file('A'),file('A')]).groups[0];assert.equal(g.received,1);assert.equal(g.duplicates,1);assert.equal(g.validated,0)});
+test('excluded files count as received, not validated; unexpected files stay separate',()=>{let g=c.tmCollection('2026-10',[contract('1','CS1')],[person('A'),person('B')],[file('A',{manualExclusion:{active:true}}),file('C')]).groups[0];assert.equal(g.received,1);assert.equal(g.missing,1);assert.equal(g.validated,0);assert.equal(g.unexpected.length,1)});
+test('contract validity uses overlap and rejects ambiguous dates and duplicate contract records',()=>{let d=c.tmCollection('2026-10',[contract('1','CS1','TM',{from:'2026-11-01'}),contract('2','CS2','TM',{from:''}),contract('3','CS3'),contract('3','CS3'),contract('4','CS4','TM',{status:'Closed',to:'2026-10-05'})],[],[]);assert.equal(d.groups.length,1);assert.equal(d.groups[0].po,'4');assert.equal(d.uncertain,2)});
+test('unknown or duplicate roster entries are flagged without inflating denominator',()=>{let g=c.tmCollection('2026-10',[contract('1','CS1')],[person('A'),person('A'),person('B','1','CS1','')],[]).groups[0];assert.equal(g.expected,2);assert.equal(g.unknown,2)});
