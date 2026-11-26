@@ -57,3 +57,8 @@ If changes are unsaved, confirm before leaving the details, reopening a timeshee
 In timesheet details, use the Checks, Issues, Preview and History tabs. The compact action bar follows the workflow: contact the PM, exclude if necessary, copy the suggested filename and print after validation.
 
 Timesheet details places the validation checkbox and Save checks in the top toolbar. Saving checks does not automatically validate; printing requires a saved validation.
+
+
+## EP working calendar (2.1.0)
+
+Add the `Calendar` worksheet to the selected master workbook, with headers `Date` and `Hours` (optional `Month` and `Day`). Include every date in each reporting month, including weekends and closures with explicit numeric zero. Supported daily limits are 0, 4.25, 5 and 8.5 hours. Excel date serials (1900/1904 systems), ISO dates and day/month/year dates are supported. Missing dates, duplicate dates and invalid values are not treated as zero. The application compares daily combined OS/NS hours (including detected additional hours) and calculated and reported monthly totals against the calendar. A failed calendar check cannot be manually accepted; correct the source and rerun analysis. Review the calendar status in Settings and monthly limit in timesheet details. The demo calendar is fictional and must not be used for actual EP validation. Location-specific holiday metadata and a full visual calendar are planned separately.
