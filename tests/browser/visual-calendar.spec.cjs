@@ -1,0 +1,38 @@
+const {test,expect}=require('@playwright/test');
+test('calendar displays monthly and annual coverage, holidays and violations',async({page})=>{
+ test.setTimeout(120000);
+ await page.goto('/demo/expanded.html');
+ await expect(page.locator('#demoBanner')).toHaveAttribute('data-ready','true',{timeout:90000});
+ await page.locator('[data-page="calendar"]').click();
+ await page.locator('#calendarMonthInput').fill('2026-10');
+ await expect(page.locator('#calendarGrid [data-date]')).toHaveCount(31);
+ await expect(page.locator('[data-date="2026-10-15"]')).toHaveAttribute('data-kind','closed');
+ await expect(page.locator('[data-date="2026-10-15"]')).toHaveClass(/calendar-violation/);
+ await expect(page.locator('#calendarAnnualRows tr')).toHaveCount(12);
+ await page.locator('#calendarPrevious').click();
+ await expect(page.locator('#calendarMonthInput')).toHaveValue('2026-09');
+ await expect(page.locator('[data-date="2026-09-16"]')).toHaveAttribute('data-location','BR');
+ await page.locator('#calendarPrevious').click();
+ await expect(page.locator('[data-date="2026-08-17"]')).toHaveAttribute('data-location','LU');
+ await page.locator('#workspacePreferences summary').click();
+ await page.locator('#themeToggle').click();
+ await page.locator('#workspacePreferences summary').click();
+ await page.screenshot({path:'test-results/calendar-dark.png',fullPage:true});
+ await page.locator('#calendarMonthInput').fill('2027-01');
+ await expect(page.locator('#calendarWarning')).toBeVisible();
+ await expect(page.locator('#calendarGrid [data-kind="unknown"]')).toHaveCount(31);
+});
+test('calendar links preserve the reporting month',async({page})=>{
+ await page.goto('/demo/index.html');
+ await expect(page.locator('#demoBanner')).toHaveAttribute('data-ready','true',{timeout:30000});
+ await page.locator('[data-page="timesheets"]').click();
+ await page.locator('#rows button[data-i]').first().click();
+ await page.locator('#openTimesheetCalendar').click();
+ await expect(page.locator('#epCalendarView')).toBeVisible();
+ await expect(page.locator('#calendarMonthInput')).toHaveValue('2026-10');
+ await page.screenshot({path:'test-results/calendar-light.png',fullPage:true});
+ await page.locator('[data-page="delivery"]').click();
+ await page.locator('#mailMonth').selectOption('2026-10');
+ await page.locator('#openDeliveryCalendar').click();
+ await expect(page.locator('#calendarMonthInput')).toHaveValue('2026-10');
+});
