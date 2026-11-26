@@ -33,7 +33,7 @@ async function startDemo(){
  const label=document.createElement('span');label.textContent='DEMO / QA — synthetic data only · changes reset on reload';
  const reset=document.createElement('button');reset.id='demoReset';reset.textContent='Reset demo';reset.style.cssText='background:white;color:#573d91;padding:3px 10px;border:0;border-radius:4px';
  reset.onclick=()=>{if(confirm('Reset synthetic demo data?'))location.reload()};
- banner.append(label,reset);document.body.prepend(banner);
+ const exit=document.createElement('a');exit.id='demoExit';exit.href='../';exit.target='_blank';exit.rel='noopener noreferrer';exit.textContent='Open production';exit.style.cssText='color:white;text-decoration:underline';banner.append(label,exit,reset);document.body.prepend(banner);
  document.title='CS-Manager — DEMO / QA';
  for(const id of ['pickMaster','pickDirectory','reconnectMaster','reconnectDirectory','master','yearFolder','files','folder','nativeMasterLabel']){
    const node=$('#'+id);if(!node)continue;
@@ -61,7 +61,19 @@ async function startDemo(){
  handleStatus('master',savedMasterHandle,true);handleStatus('directory',year,true);
  await activateMaster(await savedMasterHandle.getFile());
  await runAnalysis();
- if(results.length!==2||!masterLoaded)throw Error('Synthetic analysis failed');
+ const expectedFiles=Object.keys(demoFixtures).length-1;
+ if(results.length!==expectedFiles||!masterLoaded)throw Error('Synthetic analysis failed');
+ if(demoExpanded){
+   // Seed a representative mix of saved validation states via the real archive store.
+   for(let i=0;i<results.length;i++){
+     const x=results[i];
+     if(x.status!=='ok'||!x.controlEvaluation||!x.sourceHandle||!x.controlSignature||x.controlBlocked)continue;
+     if(i%3!==0){
+       await controlStore.save({directory:x.controlDirectory,path:x.controlPath,sourceHandle:x.sourceHandle,expectedSourceHash:x.controlSourceHash,expectedRevision:x.controlRevision,context:x.controlContext,checks:x.controlEvaluation.checks,author:'Demo reviewer',validated:true});
+     }
+   }
+   await runAnalysis();
+ }
  showPage('contracts');banner.dataset.ready='true';
 }
 startDemo().catch(error=>{
