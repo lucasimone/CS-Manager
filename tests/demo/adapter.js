@@ -78,6 +78,15 @@ async function startDemo(){
    for(const x of candidates){const current=await controlStore.readControl(year,x.controlPath);await controlStore.setExclusion(year,x.controlPath,x.sourceHandle,x.controlSourceHash,null,current.revision,true,'Synthetic demonstration exclusion','Demo reviewer');}
    await runAnalysis();
  }
+ const syntheticPdfs=new Map();
+ $('#pickPdfFolder').onclick=async()=>{
+   const scope=pdfTrackingScope();if(!scope.g)return;
+   let folder=syntheticPdfs.get(scope.key);
+   if(!folder){folder=demoDirectory('DEMO PDFs');syntheticPdfs.set(scope.key,folder);
+     let i=0;for(const p of scope.g.rows){if(!p.validated)continue;let name=suggestedPdfFilename(p.active[0]);if(!demoExpanded||i++%3!==2)folder.children.set(name,demoFile(name,new TextEncoder().encode('%PDF-1.4\n% Synthetic QA placeholder; not a signed document\n%%EOF')))}
+   }
+   pdfTrackingFolder=folder;await scanPdfTracking();
+ };
  showPage(demoExpanded?'overview':'contracts');banner.dataset.ready='true';
 }
 startDemo().catch(error=>{
