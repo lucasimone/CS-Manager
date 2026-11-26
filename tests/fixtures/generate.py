@@ -37,10 +37,10 @@ def synthetic_hours(day):
     if day.weekday()==4:return 8.5 if day.day%2==0 and day!=datetime.date(2026,10,2) else 5
     return 8.5
 def synthetic_calendar():
-    data=[['Month','Date','Hours','Day']]
+    data=[['Month','Date','Hours','Day','Location','Reason']]
     for i in range(365):
         d=datetime.date(2026,1,1)+datetime.timedelta(days=i)
-        data.append([d.strftime('%B'),(d-datetime.date(1899,12,30)).days,synthetic_hours(d),d.strftime('%A')])
+        data.append([d.strftime('%B'),(d-datetime.date(1899,12,30)).days,synthetic_hours(d),d.strftime('%A'), 'LU' if (d.month,d.day)==(8,17) else 'BR' if (d.month,d.day)==(9,16) else '', 'Synthetic local holiday' if (d.month,d.day) in {(8,17),(9,16)} else 'Synthetic closure' if (d.month,d.day)==(10,15) else ''])
     return rows(data)
 ref='DEMO/CS001'
 po='1000000001'

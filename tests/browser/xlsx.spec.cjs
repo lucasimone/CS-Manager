@@ -53,7 +53,7 @@ test('native file input fallback analyses synthetic annual directory',async({pag
 });
 test('main navigation renders without page errors',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- for(const [route,id] of [['overview','overviewView'],['contracts','contractsView'],['profiles','profilesView'],['timesheets','filesView'],['delivery','deliveryView'],['consumption','costView'],['settings','settingsView'],['log','activityLog'],['guide','guideView']]){
+ for(const [route,id] of [['overview','overviewView'],['contracts','contractsView'],['profiles','profilesView'],['timesheets','filesView'],['delivery','deliveryView'],['calendar','epCalendarView'],['consumption','costView'],['settings','settingsView'],['log','activityLog'],['guide','guideView']]){
   await page.locator('[data-page="'+route+'"]').click();
   await expect(page.locator('#'+id)).toBeVisible();
  }

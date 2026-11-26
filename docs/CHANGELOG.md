@@ -1,5 +1,13 @@
 # CS-Manager changelog
 
+## 2.2.0 — Visual EP working calendar
+
+- Monthly navigation and annual capacity summary from the loaded Excel Calendar sheet.
+- Highlight normal, short, zero-hour and unknown days; optional LU/BR location and reason metadata.
+- Show analyzed non-excluded timesheets with daily calendar violations; direct links from Delivery and Timesheet Detail.
+- Fictional holiday metadata in DEMO; no external holiday lookup or changes to validation limits.
+
+
 ## 2.1.0 — EP calendar validation
 
 - Read the working calendar from the master workbook (`Calendar`, `Date`, `Hours`).
