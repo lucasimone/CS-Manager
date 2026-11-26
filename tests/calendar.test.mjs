@@ -1,0 +1,17 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+const src=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const a=src.indexOf('function calendarDate('),b=src.indexOf('/* CS-Manager sidecar storage.',a);
+const c=vm.createContext({});vm.runInContext(src.slice(a,b),c);
+const dates=Object.fromEntries(Array.from({length:31},(_,i)=>['2026-10-'+String(i+1).padStart(2,'0'),8.5]));
+dates['2026-10-02']=5;dates['2026-10-15']=0;
+const facts=(days,extra={})=>({calendar:{dates,errors:[]},actualMonth:'2026-10',expectedMonth:'2026-10',hoursLayoutValid:true,days,reportedTotal:days.reduce((n,d)=>n+d.os+d.ns,0),...extra});
+const d=(date,os,ns=0)=>({date,os,ns,osCell:'D12',nsCell:'E12'});
+test('calendar reads Excel serial and ISO dates, including 1904 date system',()=>{assert.equal(c.calendarDate(46023),'2026-01-01');assert.equal(c.calendarDate(0,true),'1904-01-01');assert.equal(c.calendarDate('2026-02-30'),'');assert.equal(c.calendarDate('02/10/2026'),'2026-10-02')});
+test('missing or duplicate dates and invalid hours are not a valid calendar',()=>{let r=c.calendarFromRows([[2,'2026-10-01',8.5],[3,'2026-10-01',5],[4,'2026-10-02','']]);assert.equal(r.errors.length,2);assert.equal(c.calendarMonth(r,'2026-10').complete,false);assert.equal(c.calendarMonth({dates:{},errors:[]},'2026-10').total,null)});
+test('daily and monthly limits allow valid short and full days',()=>{let x=c.calendarChecks(facts([d('2026-10-02',5),d('2026-10-09',8.5)]));assert.equal(x.daily,true);assert.equal(x.monthly,true);assert.equal(x.maximum,251.5)});
+test('closure and short day violations are flagged even below monthly total',()=>{let x=c.calendarChecks(facts([d('2026-10-15',4.25),d('2026-10-02',8.5)]));assert.equal(x.daily,false);assert.equal(x.monthly,true);assert.equal(x.violations.length,2);assert.match(x.violations[0],/D12/)});
+test('daily duplicate rows and monthly reported totals cannot bypass calendar cap',()=>{let x=c.calendarChecks(facts([d('2026-10-02',4.25),d('2026-10-02',4.25)],{reportedTotal:300}));assert.equal(x.daily,false);assert.equal(x.monthly,false)});
+test('calendar failure cannot be manually accepted or marked OK',()=>{let r=c.evaluateTimesheetControls(facts([d('2026-10-15',8.5)]),{calendarDaily:{state:'OK',signature:'s'}},'s');assert.equal(r.checks.find(x=>x.id==='calendarDaily').state,'Anomalo');assert.equal(r.valid,false)});
