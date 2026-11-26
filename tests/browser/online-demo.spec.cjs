@@ -4,7 +4,7 @@ test('production preferences opens demo in a separate tab',async({page,context})
  await page.locator('#workspacePreferences summary').click();
  const link=page.locator('#launchDemo');
  await expect(link).toBeVisible();
- await expect(link).toHaveAttribute('href','demo/');
+ await expect(link).toHaveAttribute('href','demo/index.html');
  await expect(link).toHaveAttribute('target','_blank');
  const popupPromise=context.waitForEvent('page');
  await link.click();
