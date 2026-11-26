@@ -78,7 +78,7 @@ async function startDemo(){
    for(const x of candidates){const current=await controlStore.readControl(year,x.controlPath);await controlStore.setExclusion(year,x.controlPath,x.sourceHandle,x.controlSourceHash,null,current.revision,true,'Synthetic demonstration exclusion','Demo reviewer');}
    await runAnalysis();
  }
- showPage('contracts');banner.dataset.ready='true';
+ showPage(demoExpanded?'overview':'contracts');banner.dataset.ready='true';
 }
 startDemo().catch(error=>{
  const banner=$('#demoBanner');if(banner){banner.dataset.ready='false';banner.textContent='DEMO initialization failed: '+error.message}

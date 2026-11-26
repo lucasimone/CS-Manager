@@ -3,7 +3,7 @@ const path=require('node:path');
 const root=path.join(__dirname,'..','fixtures','generated');
 test.beforeEach(async({page})=>{
  await page.goto('/');
- await expect(page.locator('#contractsView')).toBeVisible();
+ await expect(page.locator('#overviewView')).toBeVisible();
 });
 test('real browser parses Standard and V2 XLSX with cached formulas',async({page})=>{
  await page.evaluate(async()=>{
@@ -53,7 +53,7 @@ test('native file input fallback analyses synthetic annual directory',async({pag
 });
 test('main navigation renders without page errors',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- for(const [route,id] of [['contracts','contractsView'],['profiles','profilesView'],['timesheets','filesView'],['delivery','deliveryView'],['consumption','costView'],['settings','settingsView'],['log','activityLog'],['guide','guideView']]){
+ for(const [route,id] of [['overview','overviewView'],['contracts','contractsView'],['profiles','profilesView'],['timesheets','filesView'],['delivery','deliveryView'],['consumption','costView'],['settings','settingsView'],['log','activityLog'],['guide','guideView']]){
   await page.locator('[data-page="'+route+'"]').click();
   await expect(page.locator('#'+id)).toBeVisible();
  }

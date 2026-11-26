@@ -37,7 +37,7 @@ test('capture WCAG accessibility audit baseline for representative pages',async(
  const reports=[];
  for(const theme of ['light','dark']){
   if(theme==='dark'){await page.locator('#workspacePreferences summary').click();await page.locator('#themeToggle').click();await page.locator('#workspacePreferences summary').click();}
-  for(const route of ['contracts','profiles','timesheets','delivery','consumption','settings','log','guide']){
+  for(const route of ['overview','contracts','profiles','timesheets','delivery','consumption','settings','log','guide']){
    await page.locator('[data-page="'+route+'"]').click();
    const report=await page.evaluate(async()=>window.axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa']}}));
    reports.push({theme,route,violations:report.violations.map(v=>({id:v.id,impact:v.impact,description:v.description,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))})),incomplete:report.incomplete.map(v=>({id:v.id,nodes:v.nodes.length}))});
@@ -45,6 +45,7 @@ test('capture WCAG accessibility audit baseline for representative pages',async(
  }
  await fs.mkdir('test-results/accessibility',{recursive:true});
  await fs.writeFile('test-results/accessibility/axe-baseline.json',JSON.stringify(reports,null,2));
- expect(reports).toHaveLength(16);
+ expect(reports).toHaveLength(18);
+ expect(reports.filter(r=>r.route==='overview').map(r=>r.theme).sort()).toEqual(['dark','light']);
  // Report-only baseline: existing violations remain visible for later remediation.
 });
