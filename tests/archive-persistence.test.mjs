@@ -10,17 +10,17 @@ assert.ok(start>=0&&end>start);
 const digest=text=>createHash('sha256').update(text).digest('hex');
 const archiveName='CS-Manager-controls.json';
 function directory(initial={}){
- const files=new Map(Object.entries(initial));const stats={writes:0,aborts:0,fail:false};
+ const files=new Map(Object.entries(initial));const stats={reads:0,writes:0,aborts:0,fail:false};
  return {name:'synthetic-year',files,stats,async getFileHandle(name,opts={}){
   if(!files.has(name)){if(!opts.create)throw Object.assign(new Error('missing'),{name:'NotFoundError'});files.set(name,'');}
-  return {name,async getFile(){return {text:async()=>files.get(name)}},async createWritable(){
+  return {name,async getFile(){const content=files.get(name);return {size:Buffer.byteLength(content),text:async()=>{stats.reads++;return content}}},async createWritable(){
    let staged;return {async write(v){if(stats.fail)throw Error('simulated write failure');staged=v},async close(){files.set(name,staged);stats.writes++},async abort(){stats.aborts++}};
   }};
  }};
 }
 function setup(){
  let clock=0;
- const c=vm.createContext({});
+ const c=vm.createContext({Blob});
  vm.runInContext(src.slice(start,end),c);
  const store=c.createTimesheetSidecarStore({digestText:async t=>digest(t),digestFile:async f=>digest(await f.text()),now:()=>new Date(Date.UTC(2026,0,1,0,0,clock++)).toISOString()});
  const dir=directory();const source={name:'demo.xlsx',content:'synthetic source',async getFile(){return {text:async()=>this.content}}};
@@ -84,6 +84,45 @@ test('batch commits staged records once',async()=>{
  const {store,dir,args}=setup();const batch=await store.beginBatch(dir);await batch.stage(args);
  assert.equal(dir.stats.writes,0);assert.equal((await batch.commit()).updated,1);assert.equal(dir.stats.writes,1);
  await assert.rejects(batch.commit(),/conclusa/);
+});
+test('analysis reuses the annual snapshot and compacts a legacy-formatted archive on write',async()=>{
+ const {store,dir,args,source}=setup();
+ const first=await store.save(args);
+ const exclusion=await store.setExclusion(dir,args.path,source,args.expectedSourceHash,null,first.revision,true,'Keep this reason','QA');
+ const old=JSON.stringify(JSON.parse(dir.files.get(archiveName)),null,2)+'\n';
+ dir.files.set(archiveName,old);
+ const beforeReads=dir.stats.reads,beforeWrites=dir.stats.writes;
+ const session=await store.beginAnalysis(dir,[],true);
+ assert.equal(session.size,Buffer.byteLength(old));
+ const previous=await session.batch.readControl(dir,args.path);
+ await session.batch.stage({...args,expectedRevision:previous.revision,validated:undefined});
+ assert.equal((await session.batch.commit()).updated,0);
+ assert.equal(session.batch.readExclusions()[args.path].reason,exclusion.reason);
+ assert.equal(dir.stats.reads-beforeReads,2);
+ assert.equal(dir.stats.writes,beforeWrites);
+ assert.equal(dir.files.get(archiveName),old);
+
+ const next=await store.beginAnalysis(dir,[],true);
+ const edited={...args,author:'QA updated',validated:undefined,expectedRevision:previous.revision,
+  checks:[{...args.checks[0],comment:'Another revision'}]};
+ await next.batch.stage(edited);
+ assert.equal((await next.batch.commit()).updated,1);
+ const updated=dir.files.get(archiveName),data=JSON.parse(updated);
+ assert.equal(updated,JSON.stringify(data)+'\n');
+ assert.equal(data.files[args.path].history.length,previous.data.history.length+1);
+ assert.deepEqual(JSON.parse(JSON.stringify(data.files[args.path].history.slice(0,-1))),JSON.parse(JSON.stringify(previous.data.history)));
+ assert.equal((await store.readExclusions(dir))[args.path].reason,exclusion.reason);
+});
+test('analysis snapshot detects archive edits before saving',async()=>{
+ const {store,dir,args}=setup();
+ await store.save(args);
+ const session=await store.beginAnalysis(dir,[],true);
+ const revision=(await session.batch.readControl(dir,args.path)).revision;
+ await session.batch.stage({...args,expectedRevision:revision,validated:false});
+ const edited=dir.files.get(archiveName)+'\n';
+ dir.files.set(archiveName,edited);
+ await assert.rejects(session.batch.commit(),/modificato/);
+ assert.equal(dir.files.get(archiveName),edited);
 });
 test('batch detects another committed writer',async()=>{
  const {store,dir,args}=setup();const batch=await store.beginBatch(dir);await batch.stage(args);
