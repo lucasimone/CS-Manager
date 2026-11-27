@@ -42,8 +42,7 @@ test('one unrecognized period filter includes malformed files and permits persis
  await ready(page);
 
  await page.evaluate(async()=>{
-  const month=await savedDirectoryHandle.getDirectoryHandle('10');
-  const folder=await month.getDirectoryHandle('demo');
+  const folder=savedDirectoryHandle.children.get('10').children.get('demo');
   const handle=await folder.getFileHandle('standard.xlsx');
   const file=await handle.getFile();
   const book=await workbook(file);
