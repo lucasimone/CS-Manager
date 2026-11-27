@@ -1,5 +1,10 @@
 # CS-Manager changelog
 
+## 2.7.0 — Contract extensions
+
+- Clone a contract and its associated resources into a Pending extension with a generated temporary PO.
+- Replace the temporary PO from the contract form to update the extension and its roster rows together.
+
 ## 2.6.1 — Timesheet calendar readability
 
 - Restore the daily status colours in the timesheet preview calendar in light and dark mode.
