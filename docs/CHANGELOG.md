@@ -1,5 +1,10 @@
 # CS-Manager changelog
 
+## 2.7.4 — Faster annual control archive
+
+- Reuse the annual archive snapshot during analysis and verify its raw revision before committing.
+- Save compact JSON with the same archive structure and history. Show the archive size in the analysis log.
+
 ## 2.7.3 — Unrecognized periods and exclusions
 
 - Show a single month filter option for timesheets whose period could not be determined.
