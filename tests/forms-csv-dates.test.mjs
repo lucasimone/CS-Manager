@@ -17,9 +17,9 @@ test('CSV escapes formulas but retains negative numeric values and quotes',()=>{
  assert.equal(c.csvCell(-4.25),'"-4.25"');assert.equal(c.csvCell('a;"b"'),'"a;""b"""');assert.equal(c.csvCell(null),'""');
 });
 test('CSV filtering uses the same month, status and search as the table',()=>{
- const rows=[{file:'A',expected:'2026-10',status:'ok',controlValidated:true},{file:'B',expected:'2026-10',status:'review'},{file:'A2',expected:'2026-09',status:'ok',controlValidated:true}];
+ const rows=[{file:'A',expected:'2026-10',period:'2026-10',status:'ok',controlValidated:true},{file:'B',expected:'2026-10',period:'2026-10',status:'review'},{file:'A2',expected:'2026-09',period:'2026-09',status:'ok',controlValidated:true}];
  const fields={'#search':{value:'a'},'#filter':{value:'validated'},'#viewMonth':{value:'2026-10'},'#viewContract':{value:''}};
- const c=context({results:rows,$:id=>fields[id]});vm.runInContext(between('function filteredTimesheets(','function updateTimesheetContractFilter('),c);
+ const c=context({results:rows,$:id=>fields[id]});vm.runInContext(between('const unknownTimesheetMonth=','function updateTimesheetContractFilter('),c);
  assert.equal(c.filteredTimesheets().length,1);assert.equal(c.filteredTimesheets()[0].file,'A');
  fields['#search'].value='';fields['#filter'].value='';fields['#viewMonth'].value='';assert.equal(c.filteredTimesheets().length,3);
 });
