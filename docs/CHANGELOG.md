@@ -1,5 +1,9 @@
 # CS-Manager changelog
 
+## 2.7.2 — Analysis timing log
+
+- Record the total time, selected file count and elapsed time per analysis phase. The activity log also summarizes runs that stop early.
+
 ## 2.7.1 — Excel analysis performance
 
 - Reuse unchanged contract data and avoid repeated source workbook reads while analyzing timesheets.
