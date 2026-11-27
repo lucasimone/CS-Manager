@@ -37,3 +37,59 @@ test('hours remain visible across detail tabs and validation changes counters',a
  await expect(page.locator('[data-status-filter="validated"] strong')).toHaveText('1');
  await expect(page.locator('[data-status-filter="ready"] strong')).toHaveText('1');
 });
+
+test('one unrecognized period filter includes malformed files and permits persistent exclusion',async({page})=>{
+ await ready(page);
+
+ await page.evaluate(async()=>{
+  const month=await savedDirectoryHandle.getDirectoryHandle('10');
+  const folder=await month.getDirectoryHandle('demo');
+  const handle=await folder.getFileHandle('standard.xlsx');
+  const file=await handle.getFile();
+  const book=await workbook(file);
+  const get=await unzip(file);
+  const sheet=book.sheets[0];
+  const xml=await get(sheet.path);
+  const changed=xml.replace('2026-10','unknown period');
+  if(changed===xml)throw Error('Missing test period');
+  const writer=await handle.createWritable();
+  await writer.write(await replaceZipFile(file,sheet.path,changed));
+  await writer.close();
+  folder.children.set('malformed.xlsx',demoFile('malformed.xlsx',new Uint8Array([1,2,3])));
+
+  // A prior control exists for standard.xlsx. Failing the checks must retain its revision.
+  const original=buildControlFacts;
+  buildControlFacts=async(result,...args)=>{
+   if(result.sourceFile?.name==='standard.xlsx')throw Error('Synthetic checks failure');
+   return original(result,...args);
+  };
+  await runAnalysis();
+ });
+
+ const monthFilter=page.locator('#viewMonth');
+ await expect(monthFilter.locator('option')).toHaveCount(3);
+ await expect(monthFilter.locator('option[value="unrecognized"]')).toHaveCount(1);
+ await monthFilter.selectOption('unrecognized');
+ const rows=page.locator('#rows tr');
+ await expect(rows).toHaveCount(2);
+ await expect(rows.filter({hasText:'standard.xlsx'})).toHaveCount(1);
+ await expect(rows.filter({hasText:'malformed.xlsx'})).toHaveCount(1);
+
+ const openStandard=()=>rows.filter({hasText:'standard.xlsx'}).locator('button[data-i]').click();
+ const exclude=page.locator('#toggleExclusion');
+ await openStandard();
+ await expect(exclude).toBeEnabled();
+ await expect(page.locator('#controlValidated')).toBeDisabled();
+ page.once('dialog',dialog=>dialog.accept('Unreadable reporting period'));
+ await exclude.click();
+ await expect(page.locator('#exclusionInfo')).toContainText('Unreadable reporting period');
+
+ await page.locator('#timesheetBack').click();
+ await page.evaluate(()=>runAnalysis());
+ await expect(monthFilter).toHaveValue('unrecognized');
+ await expect(rows.filter({hasText:'standard.xlsx'}).locator('[data-operational-state="excluded"]')).toHaveCount(1);
+ await openStandard();
+ await expect(exclude).toBeEnabled();
+ await exclude.click();
+ await expect(page.locator('#exclusionInfo')).not.toContainText('Unreadable reporting period');
+});

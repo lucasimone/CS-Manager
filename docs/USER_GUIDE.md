@@ -1,4 +1,4 @@
-# CS-Manager 2.7.2: user guide
+# CS-Manager 2.7.3: user guide
 
 Open `index.html` (identified by the CS-Manager icon in the browser tab) and configure the contract workbook and timesheet folder in **Settings**. See `INSTALLATION.md` for setup and permissions. The application reads selected files locally in your browser.
 
@@ -45,6 +45,8 @@ Existing `TS-CHECKER-controlli.json` and per-folder `CS-Manager-controls.json` f
 In timesheet details, use the Issues and Timesheet details tabs to switch between issues and the Excel preview. Selecting a cell reference in an issue opens the preview.
 
 ## Manual exclusions
+
+Use **Period not recognized** in the timesheet month filter to see files with missing or unreadable periods. These files can be excluded from their details when the source file and annual control archive are accessible. The file stays visible and is excluded from costs.
 
 In a timesheet detail, choose **Exclude from validation**, enter a reason and set your user name in the top bar. Excluded files remain visible and are omitted from costs. Restore a file from its detail and run the analysis again before validation. If an excluded file changes, review its exclusion. Exclusions are stored in the annual control archive; a writable annual folder is required.
 

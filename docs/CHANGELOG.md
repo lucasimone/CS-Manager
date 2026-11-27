@@ -1,5 +1,10 @@
 # CS-Manager changelog
 
+## 2.7.3 — Unrecognized periods and exclusions
+
+- Show a single month filter option for timesheets whose period could not be determined.
+- Allow persistent exclusions when analysis cannot complete a timesheet’s checks, provided its source and the annual archive are available.
+
 ## 2.7.2 — Analysis timing log
 
 - Record the total time, selected file count and elapsed time per analysis phase. The activity log also summarizes runs that stop early.
