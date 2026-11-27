@@ -43,3 +43,30 @@ test('analysis opens each timesheet once and reads a changed master again',async
  await expect(page.locator('#logEntries')).toContainText('Timesheet reading and checks');
  await expect(page.locator('#logEntries')).toContainText('Control archive verification and save');
 });
+
+
+test('Analyze logs one timing summary for a completed run and for an early exit',async({page})=>{
+ await page.goto('/demo/index.html');
+ await expect(page.locator('#demoBanner')).toHaveAttribute('data-ready','true',{timeout:30000});
+
+ const analyze=async()=>{
+  await page.locator('#quickAnalyze').click();
+  await page.locator('#closeAnalysisDialog').click();
+ };
+ const timings=page.locator('#logEntries .log-message').filter({hasText:'Analysis timings ('});
+
+ await analyze();
+ await expect(timings).toHaveCount(1);
+ await expect(timings).toContainText(/Analysis timings \(completed\) · Total: \d+\.\d{2} s · Files found: 2/);
+ for(const phase of ['Permissions and source access','Timesheet folder scan','Contracts workbook',
+  'Timesheet reading and checks','Duplicates and control preparation',
+  'Control archive verification and save','Display results']){
+  await expect(timings).toContainText(phase+': ');
+ }
+
+ await page.evaluate(()=>{savedMasterHandle=null;});
+ await analyze();
+ await expect(timings).toHaveCount(1);
+ await expect(timings).toContainText(/Analysis timings \(stopped\) · Total: \d+\.\d{2} s · Files found: 0/);
+ await expect(timings).toContainText('Permissions and source access: ');
+});

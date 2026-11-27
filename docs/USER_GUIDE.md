@@ -1,4 +1,4 @@
-# CS-Manager 2.7.1: user guide
+# CS-Manager 2.7.2: user guide
 
 Open `index.html` (identified by the CS-Manager icon in the browser tab) and configure the contract workbook and timesheet folder in **Settings**. See `INSTALLATION.md` for setup and permissions. The application reads selected files locally in your browser.
 
@@ -97,4 +97,4 @@ When the new PO is assigned, open the extension, select **Edit contract**, repla
 
 ## Analysis timings
 
-The activity log reports elapsed time for the folder scan, contract workbook, timesheet checks and control archive. If the folder scan or control archive is slow on shared storage, compare the same synthetic or authorized test files in an approved local location. Workbook reuse depends on a fresh content hash, and the archive still checks the source before saving.
+After each run, open **Log** and look for the **Analysis timings** entry. It reports the total time and selected file count, with separate timings for access, folder scan, master workbook, timesheet checks, control preparation, archive and display. If the run stops early, the summary shows the phases reached. A new analysis replaces the previous activity log. If the folder scan or control archive is slow on shared storage, compare the same synthetic or authorized test files in an approved local location. Workbook reuse depends on a fresh content hash, and the archive still checks the source before saving.
