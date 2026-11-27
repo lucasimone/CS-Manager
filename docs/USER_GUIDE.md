@@ -1,4 +1,4 @@
-# CS-Manager 2.7.0: user guide
+# CS-Manager 2.7.1: user guide
 
 Open `index.html` (identified by the CS-Manager icon in the browser tab) and configure the contract workbook and timesheet folder in **Settings**. See `INSTALLATION.md` for setup and permissions. The application reads selected files locally in your browser.
 
@@ -94,3 +94,7 @@ Open Timesheet Detail, then Preview. The calendar displays the actual timesheet 
 Open a contract in **Contracts** and select **Clone for extension**. Review the new dates, budget and planned hours before using the extension. The clone starts as Pending under a generated `TMP-…` PO. The CS, descriptive fields and resources are copied, including profiles, rates and planned hours where available. Dates, budget and available balance start blank. The master workbook stores the new contract and roster rows in one save.
 
 When the new PO is assigned, open the extension, select **Edit contract**, replace the temporary code with the final numeric PO and save. The app updates the extension and its resource associations together. Cloned resources use the roster and can be edited there. Integrate them into the definitive PO worksheet in Excel if you use worksheet formulas for balances or planning. Timesheets, financial history and the original PO worksheet are outside the clone.
+
+## Analysis timings
+
+The activity log reports elapsed time for the folder scan, contract workbook, timesheet checks and control archive. If the folder scan or control archive is slow on shared storage, compare the same synthetic or authorized test files in an approved local location. Workbook reuse depends on a fresh content hash, and the archive still checks the source before saving.

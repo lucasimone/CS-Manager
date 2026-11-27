@@ -1,5 +1,10 @@
 # CS-Manager changelog
 
+## 2.7.1 — Excel analysis performance
+
+- Reuse unchanged contract data and avoid repeated source workbook reads while analyzing timesheets.
+- Report folder, workbook and archive timings in the activity log.
+
 ## 2.7.0 — Contract extensions
 
 - Clone a contract and its associated resources into a Pending extension with a generated temporary PO.
